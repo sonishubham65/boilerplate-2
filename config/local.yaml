@@ -1,0 +1,10 @@
+application:
+  url:
+    backend: http://localhost:3000
+    frontend: http://localhost:4200
+  port: 3000
+databases:
+  postgres: postgres://postgres:pass123@localhost:5432/postgres
+  redis:  redis://localhost:6379
+password:
+  saltRound: 10
