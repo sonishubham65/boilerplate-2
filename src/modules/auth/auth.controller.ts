@@ -47,7 +47,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('/signup')
   async signup(@Request() req, @Body() body) {
-    const userId = await this.authService.createUser(req.user);
+    const userId = await this.authService.createUser(body);
     // TODO: Send Email for verification.
     return {
       message: 'You are registered successfully.',

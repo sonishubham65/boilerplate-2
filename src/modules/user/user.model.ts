@@ -36,11 +36,7 @@ export class UserModel extends BaseModel {
 
   @Column({ type: DataTypes.CHAR })
   @Exclude()
-  password: string = '';
-
-  @Column({ type: DataTypes.CHAR })
-  @Exclude()
-  salt: string;
+  password: string;
 
   @Column({
     type: DataTypes.ENUM,
@@ -56,7 +52,7 @@ export class UserModel extends BaseModel {
   emailVerified: Boolean = false;
 }
 
-export const userProvider = [
+export const userProviders = [
   {
     provide: 'USER_REPOSITORY',
     useValue: UserModel,

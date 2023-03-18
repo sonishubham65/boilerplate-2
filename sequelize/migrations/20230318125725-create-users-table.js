@@ -8,11 +8,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
@@ -21,20 +19,26 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       emailVerified: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
         defaultValue: false,
       },
-      created_at: {
+      status: {
+        type: Sequelize.ENUM,
+        values: ['active', 'inactive'],
+        defaultValue: 'inactive',
+      },
+      version: {
+        type: Sequelize.INTEGER,
+      },
+      createdAt: {
         type: Sequelize.DATE,
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
       },
-      deleted_at: {
+      deletedAt: {
         type: Sequelize.DATE,
       },
     });

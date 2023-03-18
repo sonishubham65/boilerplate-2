@@ -1,5 +1,4 @@
 import sequelize from 'sequelize';
-import { UUIDV4 } from 'sequelize';
 import { DataTypes } from 'sequelize';
 import {
   Column,
@@ -18,11 +17,9 @@ import {
 export class BaseModel extends Model {
   @Column({
     primaryKey: true,
-    type: DataTypes.UUID,
-    defaultValue: UUIDV4,
-    allowNull: false,
+    autoIncrement: true,
   })
-  id: string | number;
+  id: number;
 
   @CreatedAt
   @Column({
@@ -30,21 +27,21 @@ export class BaseModel extends Model {
     allowNull: false,
     defaultValue: sequelize.fn('now'),
   })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdatedAt
   @Column({
     type: DataTypes.DATE,
     allowNull: true,
   })
-  updated_at: Date;
+  updatedAt: Date;
 
   @DeletedAt
   @Column({
     type: DataTypes.DATE,
     allowNull: true,
   })
-  deleted_at: Date;
+  deletedAt: Date;
 }
 export const baseProvider = [
   {

@@ -1,44 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { UserStatus } from './user.model';
-
-export interface User {
-  id?: number;
-  name: string;
-  email: string;
-  password?: string;
-  status: UserStatus;
-  emailVerified: boolean;
-}
+import {
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { UserModel, UserStatus } from './user.model';
 
 @Injectable()
 export class UserService {
-  async get_user_with_email(email: string): Promise<User> {
-    return {
-      id: 1,
-      name: 'Shubham',
-      email: 'shubham@gmail.com',
-      password: 'xxxxxx',
-      status: UserStatus.active,
-      emailVerified: true,
-    };
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private userModel: typeof UserModel,
+  ) {}
+
+  async get_user_with_email(email: string): Promise<UserModel> {
+    const user = await this.userModel.findOne({
+      attributes: ['id', 'email', 'password', 'status', 'emailVerified'],
+      where: {
+        email,
+      },
+    });
+    return user?.toJSON();
   }
 
-  async get_user_by_id(id: number): Promise<User> {
-    return {
-      id: 1,
-      name: 'Shubham',
-      email: 'shubham@gmail.com',
-      password: 'xxxxxx',
-      status: UserStatus.active,
-      emailVerified: true,
-    };
+  async get_user_by_id(id: number): Promise<UserModel> {
+    const user = await this.userModel.findOne({
+      attributes: ['id', 'email', 'password', 'status', 'emailVerified'],
+      where: {
+        id,
+      },
+    });
+    return user?.toJSON();
   }
 
   async create_user(
-    user,
+    data: Partial<UserModel>,
     status: UserStatus = UserStatus.inactive,
-  ): Promise<number> {
-    // TODO: Create a user in DB and share insert id
-    return 1;
+  ): Promise<UserModel> {
+    data.status = status;
+    try {
+      if (await this.get_user_with_email(data.email)) {
+        throw new UnprocessableEntityException("You're already registered.");
+      }
+      const user = UserModel.build(data);
+      return await user.save();
+    } catch (e) {
+      if (
+        e.parent?.code == 23505 &&
+        e.parent?.constraint == 'users_email_key'
+      ) {
+        throw new UnprocessableEntityException("You're already registered.");
+      } else {
+        throw e;
+      }
+    }
   }
 }

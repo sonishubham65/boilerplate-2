@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
 import { UserStatus } from '../user/user.model';
+const ms = require('ms');
 
 @Injectable()
 export class AuthService {
@@ -17,10 +18,11 @@ export class AuthService {
     if (!user) {
       return false;
     } else {
-      if (await bcrypt.compare(password, user.password)) {
-        return false;
-      } else {
+      const compare = await bcrypt.compare(password, user.password);
+      if (compare) {
         return user;
+      } else {
+        return false;
       }
     }
   }
@@ -31,16 +33,22 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: token,
-        expiresIn: this.configService.getConfig(`jwt.expiry.access`),
+        expiresIn: ms(this.configService.getConfig(`jwt.expiry.access`)),
       }),
       refresh_token: this.jwtService.sign(payload, {
         secret: token,
-        expiresIn: this.configService.getConfig(`jwt.expiry.refresh`),
+        expiresIn: ms(this.configService.getConfig(`jwt.expiry.refresh`)),
       }),
     };
   }
 
+  async generate_hash(string, saltRounds = 10) {
+    const salt = await bcrypt.genSalt(saltRounds);
+    return await bcrypt.hash(string, salt);
+  }
+
   async createUser(user) {
+    user.password = await this.generate_hash(user.password);
     return await this.userService.create_user(user);
   }
 
