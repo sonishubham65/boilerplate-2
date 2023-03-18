@@ -4,7 +4,12 @@ application:
     frontend: http://localhost:4200
   port: 3000
 databases:
-  postgres: postgres://postgres:pass123@localhost:5432/postgres
+  postgres:
+    database: postgres
+    user: postgres
+    password: pass123
+    host: localhost
+    port: 5432
   redis:  redis://localhost:6379
 password:
   saltRound: 10

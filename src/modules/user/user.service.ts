@@ -1,16 +1,13 @@
 import { Injectable } from '@nestjs/common';
-
-export const enum UserStatus {
-  active = 'active',
-  inactive = 'inactive',
-}
+import { UserStatus } from './user.model';
 
 export interface User {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password?: string;
   status: UserStatus;
+  emailVerified: boolean;
 }
 
 @Injectable()
@@ -22,6 +19,7 @@ export class UserService {
       email: 'shubham@gmail.com',
       password: 'xxxxxx',
       status: UserStatus.active,
+      emailVerified: true,
     };
   }
 
@@ -32,6 +30,7 @@ export class UserService {
       email: 'shubham@gmail.com',
       password: 'xxxxxx',
       status: UserStatus.active,
+      emailVerified: true,
     };
   }
 

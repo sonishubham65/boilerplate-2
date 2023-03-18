@@ -12,8 +12,13 @@ import { ConfigService } from '../config/config.service';
         return {
           dialect: 'postgres',
           name: 'postgres',
-          uri: configService.getConfig(`databases.postgres`),
-          models: [],
+          username: configService.getConfig('database.postgres.user'),
+          password: configService.getConfig('database.postgres.password'),
+          database: configService.getConfig('database.postgres.database'),
+          host: configService.getConfig('database.postgres.host'),
+          port: configService.getConfig('database.postgres.port'),
+          autoLoadModels: true,
+          models: [__dirname + '/**/*.model.ts'],
         };
       },
       inject: [ConfigService],
