@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Global, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
@@ -8,6 +8,7 @@ import { ConfigService } from '../config/config.service';
 @Injectable()
 export class AccessGuard extends AuthGuard('access') {}
 
+@Global()
 @Injectable()
 export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor(private authService: AuthService, configService: ConfigService) {
@@ -22,8 +23,6 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: any) {
-    if (await this.authService.validate(payload.id)) {
-      throw new UnauthorizedException();
-    }
+    return payload;
   }
 }

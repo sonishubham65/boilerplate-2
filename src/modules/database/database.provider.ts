@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { ConfigService } from '../config/config.service';
+import ProductModel from '../product/product.model';
 import { UserModel } from '../user/user.model';
 
 const configService = new ConfigService();
@@ -18,7 +19,7 @@ export const databaseProviders = [
         //   console.log(`SQL, timing`, sql, timing);
         // },
       });
-      sequelize.addModels([UserModel]);
+      sequelize.addModels([UserModel, ProductModel]);
       return sequelize;
     },
   },

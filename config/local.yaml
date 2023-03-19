@@ -16,5 +16,5 @@ password:
 jwt:
   token: FvDjkvg5S6ebAew7oPaWKxZlisNjbi6d
   expiry:
-    access: 5m
+    access: 50m
     refresh: 365d
