@@ -6,7 +6,7 @@ import { ConfigModule } from './modules/config/config.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductModule } from './modules/product/product.module';
-import { CartModule } from './modules/cart/cart.module';
+import { CartItemModule } from './modules/cart/cartitem.module';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { CartModule } from './modules/cart/cart.module';
     UserModule,
     AuthModule,
     ProductModule,
-    CartModule,
+    CartItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

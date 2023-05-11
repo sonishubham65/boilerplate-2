@@ -9,6 +9,7 @@ import {
 import { DataTypes } from 'sequelize';
 import { BaseModel } from '../base.model';
 import { Exclude } from 'class-transformer';
+import { PRODUCT_REPOSITORY } from '../database/database.constant';
 
 export enum ProductStatus {
   active = 'active',
@@ -50,7 +51,7 @@ export class ProductModel extends BaseModel {
 
 export const productProviders = [
   {
-    provide: 'PRODUCT_REPOSITORY',
+    provide: PRODUCT_REPOSITORY,
     useValue: ProductModel,
   },
 ];

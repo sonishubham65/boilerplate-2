@@ -6,11 +6,15 @@ import {
   Post,
   Request,
   UseGuards,
+  Version,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalGuard } from './local.guard';
 
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -21,10 +25,12 @@ export class AuthController {
    * @description signin user and return user, access_token and refresh_token
    * @returns
    */
+  @Version('1')
   @UseGuards(LocalGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
   async signin(@Request() req, @Body() body) {
+    console.log(req.headers);
     // TODO: Get user Profile, Roles, Permissions, for now considering the req.user only
     delete req.user.password;
     const tokens = this.authService.generate_token(req.user);

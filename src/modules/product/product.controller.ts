@@ -1,27 +1,41 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   UseGuards,
+  Version,
 } from '@nestjs/common';
 import { AccessGuard } from '../auth/access.guard';
 import { ProductService } from './product.service';
 
 @UseGuards(AccessGuard)
-@Controller('product')
+@Controller({
+  path: 'product',
+  version: '1',
+})
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async signup(@Body() body) {
+  async create(@Body() body) {
     const product = await this.productService.createProduct(body);
-    // TODO: Send Email for verification.
+
     return {
-      message: 'You are registered successfully.',
+      message: 'A new product has been listed.',
       data: { product },
+    };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get()
+  async list() {
+    const products = await this.productService.getProducts();
+    return {
+      data: { products },
     };
   }
 }

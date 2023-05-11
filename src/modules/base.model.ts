@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import sequelize from 'sequelize';
 import { DataTypes } from 'sequelize';
 import {
@@ -22,6 +23,7 @@ export class BaseModel extends Model {
   id: number;
 
   @CreatedAt
+  @Exclude()
   @Column({
     type: DataTypes.DATE,
     allowNull: false,
@@ -30,6 +32,7 @@ export class BaseModel extends Model {
   createdAt: Date;
 
   @UpdatedAt
+  @Exclude()
   @Column({
     type: DataTypes.DATE,
     allowNull: true,
@@ -37,6 +40,7 @@ export class BaseModel extends Model {
   updatedAt: Date;
 
   @DeletedAt
+  @Exclude()
   @Column({
     type: DataTypes.DATE,
     allowNull: true,

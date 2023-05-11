@@ -1,15 +1,19 @@
 import {
+  ConflictException,
   Inject,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Redis } from 'ioredis';
+import { REDIS_PROVIDER } from '../database/database.constant';
 import { UserModel, UserStatus } from './user.model';
-
+import * as moment from 'moment';
 @Injectable()
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userModel: typeof UserModel,
+    @Inject(REDIS_PROVIDER) private cacheManager: Redis,
   ) {}
 
   async get_user_with_email(email: string): Promise<UserModel> {
@@ -37,21 +41,21 @@ export class UserService {
     status: UserStatus = UserStatus.inactive,
   ): Promise<UserModel> {
     data.status = status;
-    try {
-      if (await this.get_user_with_email(data.email)) {
-        throw new UnprocessableEntityException("You're already registered.");
-      }
-      const user = UserModel.build(data);
-      return await user.save();
-    } catch (e) {
-      if (
-        e.parent?.code == 23505 &&
-        e.parent?.constraint == 'users_email_key'
-      ) {
-        throw new UnprocessableEntityException("You're already registered.");
+
+    const userKey = `USER_CREATE_${data.email}`;
+    const user = UserModel.build(data);
+
+    if (!(await this.cacheManager.get(userKey))) {
+      const lock = await this.cacheManager.setnx(userKey, moment().unix());
+      if (lock) {
+        return await user.save();
       } else {
-        throw e;
+        throw new ConflictException(
+          'Someone else has already aquired lock for the same Email.',
+        );
       }
+    } else {
+      throw new UnprocessableEntityException('Duplicate Email address');
     }
   }
 }
