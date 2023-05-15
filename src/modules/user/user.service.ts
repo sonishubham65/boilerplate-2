@@ -18,7 +18,14 @@ export class UserService {
 
   async get_user_with_email(email: string): Promise<UserModel> {
     const user = await this.userModel.findOne({
-      attributes: ['id', 'email', 'password', 'status', 'emailVerified'],
+      attributes: [
+        'id',
+        'email',
+        'name',
+        'password',
+        'status',
+        'emailVerified',
+      ],
       where: {
         email,
       },
@@ -28,7 +35,14 @@ export class UserService {
 
   async get_user_by_id(id: number): Promise<UserModel> {
     const user = await this.userModel.findOne({
-      attributes: ['id', 'email', 'password', 'status', 'emailVerified'],
+      attributes: [
+        'id',
+        'email',
+        'password',
+        'name',
+        'status',
+        'emailVerified',
+      ],
       where: {
         id,
       },

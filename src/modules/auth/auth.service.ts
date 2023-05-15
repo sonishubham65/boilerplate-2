@@ -3,7 +3,7 @@ import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
-import { UserStatus } from '../user/user.model';
+import UserModel, { UserStatus } from '../user/user.model';
 const ms = require('ms');
 
 @Injectable()
@@ -16,13 +16,20 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.userService.get_user_with_email(email);
     if (!user) {
-      return false;
+      return { success: false, code: 'USER_NOTFOUND' };
     } else {
-      const compare = await bcrypt.compare(password, user.password);
-      if (compare) {
-        return user;
+      if (user.status !== UserStatus.active) {
+        return { user, success: false, code: 'STATUS_INACTIVE' };
+      }
+      if (password) {
+        const compare = await bcrypt.compare(password, user.password);
+        if (compare) {
+          return { user, success: true };
+        } else {
+          return { success: false, code: 'PASSWORD_MISMATCH' };
+        }
       } else {
-        return false;
+        return { success: true, user, code: 'PASSWORD_NOTCOMPARED' };
       }
     }
   }
@@ -48,7 +55,7 @@ export class AuthService {
   }
 
   async createUser(user) {
-    user.password = await this.generate_hash(user.password);
+    if (user.password) user.password = await this.generate_hash(user.password);
     return await this.userService.create_user(user);
   }
 
@@ -58,5 +65,9 @@ export class AuthService {
       return false;
     }
     return true;
+  }
+
+  async get_user_with_email(email): Promise<UserModel> {
+    return this.userService.get_user_with_email(email);
   }
 }

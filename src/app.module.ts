@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductModule } from './modules/product/product.module';
 import { CartItemModule } from './modules/cart/cartitem.module';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CartItemModule } from './modules/cart/cartitem.module';
     AuthModule,
     ProductModule,
     CartItemModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

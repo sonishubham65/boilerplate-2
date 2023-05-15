@@ -33,4 +33,5 @@ async function bootstrap() {
   });
   await app.listen(configService.getConfig('application.port'));
 }
+console.log('Ji');
 bootstrap();

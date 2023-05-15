@@ -1,14 +1,21 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Request,
+  Res,
   UseGuards,
   Version,
 } from '@nestjs/common';
+import { Response } from 'express';
+import { ConfigService } from '../config/config.service';
+import { Signin } from './auth.dto';
 import { AuthService } from './auth.service';
+import { FacebookGuard } from './facebook.guard';
 import { LocalGuard } from './local.guard';
 
 @Controller({
@@ -16,7 +23,32 @@ import { LocalGuard } from './local.guard';
   version: '1',
 })
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private configService: ConfigService,
+    private authService: AuthService,
+  ) {}
+
+  @Version('1')
+  @UseGuards(FacebookGuard)
+  @Get('/facebook')
+  async facebookLogin(@Req() req: Request, @Res() res: Response) {
+    return HttpStatus.OK;
+  }
+
+  @Version('1')
+  @UseGuards(FacebookGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get('/facebook/callback')
+  async facebookLoginCallback(@Request() req, @Body() body): Promise<Signin> {
+    const tokens = this.authService.generate_token(req.user);
+    return {
+      message: 'Logged in successfully',
+      data: {
+        user: req.user,
+        tokens,
+      },
+    };
+  }
 
   /**
    *
@@ -29,10 +61,8 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
-  async signin(@Request() req, @Body() body) {
-    console.log(req.headers);
+  async signin(@Request() req, @Body() body): Promise<Signin> {
     // TODO: Get user Profile, Roles, Permissions, for now considering the req.user only
-    delete req.user.password;
     const tokens = this.authService.generate_token(req.user);
     return {
       message: 'You are logged in successfully.',
