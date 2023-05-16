@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import {
+  BelongsTo,
   BelongsToMany,
   Column,
   ForeignKey,
@@ -10,6 +11,7 @@ import { DataTypes } from 'sequelize';
 import { BaseModel } from '../base.model';
 import { Exclude } from 'class-transformer';
 import { POST_REPOSITORY } from '../database/database.constant';
+import UserModel from '../user/user.model';
 
 export enum PostStatus {
   active = 'active',
@@ -23,8 +25,7 @@ export enum PostStatus {
       fields: ['title'],
     },
     {
-      fields: ['sku'],
-      unique: true,
+      fields: ['status'],
     },
   ],
 })
@@ -33,7 +34,10 @@ export class PostModel extends BaseModel {
   title: string;
 
   @Column({ type: DataTypes.STRING })
-  description: number;
+  description: string;
+
+  @BelongsTo(() => UserModel, 'userId')
+  user: UserModel;
 
   @Column({
     type: DataTypes.ENUM,

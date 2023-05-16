@@ -12,7 +12,7 @@ import {
   Version,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ConfigService } from '../config/config.service';
+import { UserModel } from '../user/user.model';
 import { Signin } from './auth.dto';
 import { AuthService } from './auth.service';
 import { FacebookGuard } from './facebook.guard';
@@ -23,10 +23,7 @@ import { LocalGuard } from './local.guard';
   version: '1',
 })
 export class AuthController {
-  constructor(
-    private configService: ConfigService,
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Version('1')
   @UseGuards(FacebookGuard)
@@ -39,8 +36,17 @@ export class AuthController {
   @UseGuards(FacebookGuard)
   @HttpCode(HttpStatus.OK)
   @Get('/facebook/callback')
-  async facebookLoginCallback(@Request() req, @Body() body): Promise<Signin> {
-    const tokens = this.authService.generate_token(req.user);
+  async facebookLoginCallback(
+    @Request() req,
+    @Body() body,
+  ): Promise<{
+    message: string;
+    data: {
+      user: UserModel;
+      tokens: { access_token: string; refresh_token: string };
+    };
+  }> {
+    const tokens = this.authService.generate_token({ ...req.user });
     return {
       message: 'Logged in successfully',
       data: {

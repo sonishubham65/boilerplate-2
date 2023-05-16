@@ -1,10 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import CartItemModel from '../cart/cartItem.model';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
-import ProductModel from '../product/product.model';
-import UserModel from '../user/user.model';
+import { PostModel } from '../post/post.model';
+import { UserModel } from '../user/user.model';
 import { POSTGRES1, REDIS_PROVIDER } from './database.constant';
 import { redisProvider } from './redis.provider';
 import { RedisService } from './redis/redis.service';
@@ -25,12 +24,12 @@ import { RedisService } from './redis/redis.service';
           host: configService.getConfig('databases.postgres.host'),
           port: configService.getConfig('databases.postgres.port'),
           logging: (sql, timing) => {
-            console.log(`SQL, timing`, sql);
+            console.log(`SQL`, sql, timing['bind']);
           },
           pool: {
             acquire: 20000,
           },
-          models: [UserModel, ProductModel, CartItemModel],
+          models: [UserModel, PostModel],
         };
       },
     }),

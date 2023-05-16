@@ -1,4 +1,4 @@
-import { VersioningType } from '@nestjs/common';
+import { HttpStatus, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from './modules/config/config.service';
@@ -14,6 +14,15 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    }),
+  );
 
   const configService = app.get<ConfigService>(ConfigService);
 
@@ -33,5 +42,4 @@ async function bootstrap() {
   });
   await app.listen(configService.getConfig('application.port'));
 }
-console.log('Ji');
 bootstrap();

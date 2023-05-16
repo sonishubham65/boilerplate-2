@@ -24,6 +24,7 @@ export class AuthService {
       if (password) {
         const compare = await bcrypt.compare(password, user.password);
         if (compare) {
+          delete user.password; // remove password from object after validation
           return { user, success: true };
         } else {
           return { success: false, code: 'PASSWORD_MISMATCH' };
@@ -68,6 +69,6 @@ export class AuthService {
   }
 
   async get_user_with_email(email): Promise<UserModel> {
-    return this.userService.get_user_with_email(email);
+    return await this.userService.get_user_with_email(email);
   }
 }

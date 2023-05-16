@@ -9,6 +9,7 @@ import {
 import { DataTypes } from 'sequelize';
 import { BaseModel } from '../base.model';
 import { Exclude } from 'class-transformer';
+import PostModel from '../post/post.model';
 
 export enum UserStatus {
   active = 'active',
@@ -50,6 +51,9 @@ export class UserModel extends BaseModel {
     defaultValue: true,
   })
   emailVerified: Boolean = false;
+
+  @HasMany(() => PostModel, 'userId')
+  posts: PostModel[];
 }
 
 export const userProviders = [

@@ -29,7 +29,6 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
         'email',
       ],
     };
-    console.log(config);
     super(config);
   }
 
@@ -39,7 +38,6 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     profile: Profile,
     done: (err: any, user: any, info?: any) => void,
   ): Promise<any> {
-    console.log(accessToken, refreshToken, profile);
     const { name, emails } = profile;
 
     const facebookuser: Partial<UserModel> = {
@@ -55,7 +53,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       let response = await this.authService.validateUser(user.email, '');
       done(null, user);
     } else {
-      const response = await this.authService.createUser(user);
+      const response = await this.authService.createUser(facebookuser);
       done(null, response);
     }
   }
