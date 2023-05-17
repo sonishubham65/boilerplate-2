@@ -1,32 +1,43 @@
 import {
-  Module,
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  Scope,
-  Inject,
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { REQUEST, ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { LoggerService } from './logger.service';
 
-@Injectable()
-export class LoggerInterceptor implements NestInterceptor {
+@Catch()
+export class LoggerException implements ExceptionFilter {
   constructor(private logger: LoggerService) {}
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    this.logger.log('Request Interceptor');
-    const now = Date.now();
-    return next.handle().pipe(
-      tap((data) => {
-        const response = context.switchToHttp().getResponse();
-        this.logger.log(`Response Interceptor`, {
-          time: Date.now() - now,
-          data,
-        });
-      }),
-    );
+    let status = exception.getStatus();
+
+    this.logger.log('In Exception', {
+      msg: exception.message,
+      code: exception.stack,
+    });
+
+    if (
+      [
+        'UnprocessableEntityException',
+        'ForbiddenException',
+        'ConflictException',
+        'NotFoundException',
+        'UnauthorizedException',
+        'HttpException',
+        'ForbiddenException',
+      ]
+    ) {
+    } else {
+    }
+
+    return {
+      status,
+    };
   }
 }
