@@ -27,7 +27,7 @@ describe('PostController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('Create function', () => {
+  describe('Detail API function', () => {
     it('should return an object of details', async () => {
       const detail: any = await Promise.resolve({
         id: 27,

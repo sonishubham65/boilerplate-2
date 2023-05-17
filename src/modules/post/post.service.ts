@@ -1,11 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Order, Sequelize, WhereOptions } from 'sequelize';
 import { POST_REPOSITORY } from '../database/database.constant';
+import { LoggerService } from '../logger/logger.service';
 import { PostModel } from './post.model';
 
 @Injectable()
 export class PostService {
   constructor(
+    private logger: LoggerService,
     @Inject(POST_REPOSITORY)
     private postModel: typeof PostModel,
   ) {}
@@ -34,6 +36,7 @@ export class PostService {
   }
 
   async detail(id): Promise<PostModel> {
+    this.logger.log('Inside Service');
     return await this.postModel.findOne({
       where: {
         id,

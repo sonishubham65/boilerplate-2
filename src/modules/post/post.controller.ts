@@ -15,6 +15,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AccessGuard } from '../auth/access.guard';
+import { LoggerService } from '../logger/logger.service';
 import PostModel from './post.model';
 import { PostService } from './post.service';
 
@@ -23,7 +24,10 @@ import { PostService } from './post.service';
   version: '1',
 })
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private logger: LoggerService,
+  ) {}
 
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.CREATED)
@@ -67,6 +71,7 @@ export class PostController {
   async detail(
     @Param() param,
   ): Promise<{ data: { post: Partial<PostModel> } }> {
+    this.logger.log('Inside Controller');
     const post = await this.postService.detail(param.id);
 
     return {

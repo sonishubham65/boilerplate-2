@@ -21,3 +21,9 @@
 <https://wd1.myworkdaysite.com/en-US/recruiting/paypal/jobs/userHome>
 
 <http://localhost:3000/v1/auth/facebook/>
+
+- Run following command to run Unit test cases for specific file (Controller)
+`npm run test -f post.controller.spec.ts`
+
+- Run following command to run Unit test cases for specific file (Service)
+`npm run test -f post.service.spec.ts`
