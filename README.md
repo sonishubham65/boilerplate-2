@@ -1,5 +1,7 @@
 ## Migration - Generate and apply sequelize migration
 
+- baseuri: <https://localhost:3000/v1>
+
 - Start server on Prod
 `npm run start`
 
@@ -30,3 +32,8 @@
 
 - Run following command to run E2E test case
 `npm run test:e2e -f product.e2e-spec.ts`
+
+- Error handling
+`{{baseuri}}/error/1`
+`{{baseuri}}/error/2`
+`{{baseuri}}/error/3`
