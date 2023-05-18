@@ -94,8 +94,7 @@ export class PostController {
     const post = await this.postService.detail(param.id);
     if (post && post['userId'] == req.user.id) {
       const response = await this.postService.update(param.id, body);
-      console.log(response);
-      if (response) {
+      if (response && response[0] == 1) {
         return {
           message: 'The post has been updated.',
         };
