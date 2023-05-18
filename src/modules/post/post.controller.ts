@@ -11,6 +11,7 @@ import {
   Put,
   Query,
   Req,
+  UnauthorizedException,
   UnprocessableEntityException,
   UseGuards,
 } from '@nestjs/common';
@@ -74,6 +75,12 @@ export class PostController {
     this.logger.log('Inside Controller');
     const post = await this.postService.detail(param.id);
 
+    //throw new UnauthorizedException('You are not authorised');
+    //throw new Error('manual error generate');
+    // throw new UnprocessableEntityException('You are not authorised', {
+    //   cause: new Error('Heheh'),
+    //   description: 'Hello',
+    // });
     return {
       data: {
         post: post,

@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { STATUS_CODES } from 'http';
 import { LoggerService } from './logger.service';
 
 @Catch()
@@ -15,29 +16,31 @@ export class LoggerException implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    let status = exception.getStatus();
+    //const statusCode = exception.getStatus();
 
-    this.logger.log('In Exception', {
-      msg: exception.message,
-      code: exception.stack,
-    });
+    const result = {
+      data: {
+        stack: exception.stack,
+        cause: exception.cause,
+        name: exception.name,
+        response: exception.getResponse ? exception.getResponse() : undefined,
+      },
+      message: exception.message,
+      statusCode: exception.getStatus
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR,
+    };
 
-    if (
-      [
-        'UnprocessableEntityException',
-        'ForbiddenException',
-        'ConflictException',
-        'NotFoundException',
-        'UnauthorizedException',
-        'HttpException',
-        'ForbiddenException',
-      ]
-    ) {
-    } else {
+    this.logger.log('In Exception', result); // log original data
+
+    const payload = {
+      message: result.message,
+    };
+
+    if (result.statusCode == HttpStatus.INTERNAL_SERVER_ERROR) {
+      payload['message'] = 'Something went wrong';
     }
 
-    return {
-      status,
-    };
+    response.status(result.statusCode).json(payload);
   }
 }

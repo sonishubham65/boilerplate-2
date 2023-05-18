@@ -7,8 +7,3 @@ jwt:
   expiry:
     access: 50m
     refresh: 365d
-idp:
-  facebook:
-    appId: 1590269461471529
-    secret: 7b7af32495107e79d22117e47d7836e0
-    callbackurl: http://localhost:3000/v1/auth/facebook/callback
