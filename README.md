@@ -22,8 +22,9 @@
 - Run following command to undo the migration
 `npm run migration:undo`
 
-<https://wd1.myworkdaysite.com/en-US/recruiting/paypal/jobs/userHome>
+# Authentication
 
+- Open this url and you will be redirected to facebook and once login, you will be back on localhost:3000 and getting access token
 <http://localhost:3000/v1/auth/facebook/>
 
 # Test cases
