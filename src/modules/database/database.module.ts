@@ -4,11 +4,14 @@ import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { PostModel } from '../post/post.model';
 import { UserModel } from '../user/user.model';
-import { POSTGRES1, REDIS_PROVIDER } from './database.constant';
+import {
+  POSTGRES1,
+  POSTGRES1FACTORY,
+  REDIS_PROVIDER,
+} from './database.constant';
 import { redisProvider } from './redis.provider';
 import { RedisService } from './redis/redis.service';
 
-@Global()
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
@@ -16,7 +19,12 @@ import { RedisService } from './redis/redis.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory(configService: ConfigService) {
+        console.log(
+          'databases.postgres',
+          configService.getConfig('databases.postgres'),
+        );
         return {
+          name: POSTGRES1,
           dialect: 'postgres',
           username: configService.getConfig('databases.postgres.user'),
           password: configService.getConfig('databases.postgres.password'),

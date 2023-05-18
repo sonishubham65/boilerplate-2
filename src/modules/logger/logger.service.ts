@@ -1,21 +1,24 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import * as chalk from 'chalk';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LoggerService {
   private readonly requestId: string;
 
-  constructor() {
+  constructor() { //@Inject(REQUEST) private request: Request
     this.requestId = uuidv4();
   }
 
-  private save(message: string, data?: object, type: string = '') {
+  private save(message: string, data?: object, type: string = 'info') {
     console.log(
       JSON.stringify({
         message,
         data,
         requestId: this.requestId,
+        //path: this.request.url,
         type,
       }),
     );

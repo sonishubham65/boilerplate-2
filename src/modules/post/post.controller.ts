@@ -14,6 +14,7 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
   UseGuards,
+  Version,
 } from '@nestjs/common';
 import { AccessGuard } from '../auth/access.guard';
 import { LoggerService } from '../logger/logger.service';

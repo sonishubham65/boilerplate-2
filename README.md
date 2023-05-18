@@ -27,3 +27,6 @@
 
 - Run following command to run Unit test cases for specific file (Service)
 `npm run test -f post.service.spec.ts`
+
+- Run following command to run E2E test case
+`npm run test:e2e -f product.e2e-spec.ts`
