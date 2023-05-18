@@ -1,4 +1,4 @@
-## Migration - Generate and apply sequelize migration
+# Start application
 
 - baseuri: <https://localhost:3000/v1>
 
@@ -7,6 +7,8 @@
 
 - Start server on local
 `npm run start:dev`
+
+# Migration - Generate and apply sequelize migration
 
 - Debug server
 `npm run start:debug`
@@ -23,6 +25,8 @@
 <https://wd1.myworkdaysite.com/en-US/recruiting/paypal/jobs/userHome>
 
 <http://localhost:3000/v1/auth/facebook/>
+
+# Test cases
 
 - Run following command to run Unit test cases for specific file (Controller)
 `npm run test -f post.controller.spec.ts`
