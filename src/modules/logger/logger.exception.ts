@@ -19,12 +19,12 @@ export class LoggerException implements ExceptionFilter {
     //const statusCode = exception.getStatus();
 
     const result = {
-      data: {
+      errordata: {
         stack: exception.stack,
         cause: exception.cause,
         name: exception.name,
-        response: exception.getResponse ? exception.getResponse() : undefined,
       },
+      data: exception.getResponse ? exception.getResponse() : undefined,
       message: exception.message,
       statusCode: exception.getStatus
         ? exception.getStatus()
@@ -35,6 +35,7 @@ export class LoggerException implements ExceptionFilter {
 
     const payload = {
       message: result.message,
+      data: result.data,
     };
 
     if (result.statusCode == HttpStatus.INTERNAL_SERVER_ERROR) {

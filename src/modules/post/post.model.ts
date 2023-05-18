@@ -1,15 +1,7 @@
 import * as _ from 'lodash';
-import {
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  ForeignKey,
-  HasMany,
-  Table,
-} from 'sequelize-typescript';
+import { BelongsTo, Column, Table } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { BaseModel } from '../base.model';
-import { Exclude } from 'class-transformer';
 import { POST_REPOSITORY } from '../database/database.constant';
 import UserModel from '../user/user.model';
 
@@ -38,6 +30,8 @@ export class PostModel extends BaseModel {
 
   @BelongsTo(() => UserModel, 'userId')
   user: UserModel;
+
+  userId: number;
 
   @Column({
     type: DataTypes.ENUM,

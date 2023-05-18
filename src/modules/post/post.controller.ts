@@ -18,6 +18,7 @@ import {
 } from '@nestjs/common';
 import { AccessGuard } from '../auth/access.guard';
 import { LoggerService } from '../logger/logger.service';
+import { PostDTO } from './post.dto';
 import PostModel from './post.model';
 import { PostService } from './post.service';
 
@@ -34,7 +35,7 @@ export class PostController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() body, @Req() req) {
+  async create(@Body() body: PostDTO, @Req() req) {
     const post = await this.postService.create({
       ...body,
       userId: req.user.id,

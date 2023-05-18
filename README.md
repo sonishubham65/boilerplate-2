@@ -37,3 +37,7 @@
 `{{baseuri}}/error/1`
 `{{baseuri}}/error/2`
 `{{baseuri}}/error/3`
+
+# DTO
+
+- post.controller.ts, create function
