@@ -40,4 +40,4 @@
 
 # DTO
 
-- post.controller.ts, create function
+- post.controller.ts, create function, /v1/post -> create api
