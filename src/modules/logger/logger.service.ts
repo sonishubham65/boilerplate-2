@@ -8,7 +8,7 @@ import { Request } from 'express';
 export class LoggerService {
   private readonly requestId: string;
 
-  constructor() { //@Inject(REQUEST) private request: Request
+  constructor(@Inject(REQUEST) private request: Request) {
     this.requestId = uuidv4();
   }
 
@@ -18,7 +18,7 @@ export class LoggerService {
         message,
         data,
         requestId: this.requestId,
-        //path: this.request.url,
+        path: this.request.url,
         type,
       }),
     );

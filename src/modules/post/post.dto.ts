@@ -21,13 +21,13 @@ import { PostStatus } from './post.model';
 export class PostDTO {
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(30)
+  @MaxLength(100)
   @IsString()
   title;
 
   @IsNotEmpty()
   @MinLength(100)
-  @MaxLength(300)
+  @MaxLength(2000)
   @IsString()
   description;
 

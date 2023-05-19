@@ -1,24 +1,24 @@
 version: '3'
 services:
-  # nestjs:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - redis
-  #     - postgres
-  #     - mongo
-  #     - elasticsearch
-  #   ports:
-  #     - '3000:3000'
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - POSTGRES_HOST=postgres
-  #     - MONGO_HOST=mongo
-  #     - ELASTICSEARCH_HOST=elasticsearch
-  #     - NODE_ENV=docker
-  #   volumes:
-  #     - ./src:/app/src
+  nestjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - postgres
+      - mongo
+      - elasticsearch
+    ports:
+      - '3000:3000'
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=postgres
+      - MONGO_HOST=mongo
+      - ELASTICSEARCH_HOST=elasticsearch
+      - NODE_ENV=docker
+    volumes:
+      - ./src:/app/src
   redis:
     image: redis
     environment:

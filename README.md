@@ -1,12 +1,14 @@
 # Start application
 
-- baseuri: <https://localhost:3000/v1>
+- docker-compose up
 
 - Start server on Prod
 `npm run start`
 
 - Start server on local
 `npm run start:dev`
+
+- baseuri: <https://localhost:3000/v1>
 
 # Migration - Generate and apply sequelize migration
 
