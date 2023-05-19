@@ -46,3 +46,7 @@
 # DTO
 
 - post.controller.ts, create function, /v1/post -> create api
+
+# Fake data generate
+
+- on Main.ts, written function code, simply call the function fakeData
