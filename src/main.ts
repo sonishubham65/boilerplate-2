@@ -68,7 +68,7 @@ const fakeData = async () => {
           //   },
           // },
           {
-            name: faker.person.fullName(),
+            name: faker.name.fullName(),
             email: faker.internet.email(),
             password: faker.internet.password(),
           },

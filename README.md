@@ -1,28 +1,17 @@
 # Start application
 
+## Run docker compos
+
+- for redis, mongo, postgres,
 - docker-compose up
 
-- Start server on Prod
-`npm run start`
+## Run migration npm run migration:run
 
 - Start server on local
 `npm run start:dev`
 
 - baseuri: <https://localhost:3000/v1>
 
-# Migration - Generate and apply sequelize migration
-
-- Debug server
-`npm run start:debug`
-
-- Run following command to generate blank migration file
-`npm run migration:generate --name create-users-table`
-
-- Run following command to run and push all the migration
-`npm run migration:run`
-
-- Run following command to undo the migration
-`npm run migration:undo`
 
 # Authentication
 
@@ -52,3 +41,17 @@
 # Fake data generate
 
 - on Main.ts, written function code, simply call the function fakeData
+
+# Migration - Generate and apply sequelize migration
+
+- Debug server
+`npm run start:debug`
+
+- Run following command to generate blank migration file
+`npm run migration:generate --name create-users-table`
+
+- Run following command to run and push all the migration
+`npm run migration:run`
+
+- Run following command to undo the migration
+`npm run migration:undo`
