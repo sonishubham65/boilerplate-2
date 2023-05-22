@@ -29,8 +29,9 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
 
   const whitelist = configService
-    .getConfig('application.url.frontend')
-    .split(',');
+    .getConfig('application.url.cors')
+    .split(',')
+    .map((url) => url.trim());
   app.enableCors({
     origin: function (origin, callback) {
       if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -51,26 +52,30 @@ bootstrap();
  */
 const fakeData = async () => {
   for (let i = 0; i < 5000000; i++) {
-    const title = faker.lorem.sentence();
-    const description = faker.lorem.paragraph();
     try {
+      // await axios
+      //   .post('http://localhost:3000/v1/auth/signup', {
+      //     name: faker.name.fullName(),
+      //     email: faker.internet.email(),
+      //     password: faker.internet.password(),
+      //   })
+      //   .then((response) => {})
+      //   .catch((e) => {
+      //     console.log('failre', e.message);
+      //   });
+
       await axios
         .post(
-          'http://localhost:3000/v1/auth/signup',
-          // {
-          //   title,
-          //   description,
-          //   status: 'active',
-          // },
-          // {
-          //   headers: {
-          //     Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzb25pc2h1YmhhbTY1QGdtYWlsLmNvbSIsIm5hbWUiOiJTaHViaGFtIFNvbmkiLCJwYXNzd29yZCI6bnVsbCwic3RhdHVzIjoiaW5hY3RpdmUiLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwiaWF0IjoxNjg0MTQzNTk3LCJleHAiOjE2ODcxNDM1OTd9.r8lXoTnm_f1JrNvd9pyk47Q70AE_maX98iuwYhr1ulM`,
-          //   },
-          // },
+          'http://localhost:3000/v1/post',
           {
-            name: faker.name.fullName(),
-            email: faker.internet.email(),
-            password: faker.internet.password(),
+            title: faker.lorem.sentence(),
+            description: faker.lorem.paragraph(),
+            status: 'active',
+          },
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzb25pc2h1YmhhbTY1QGdtYWlsLmNvbSIsIm5hbWUiOiJTaHViaGFtIFNvbmkiLCJwYXNzd29yZCI6bnVsbCwic3RhdHVzIjoiaW5hY3RpdmUiLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwiaWF0IjoxNjg0MTQzNTk3LCJleHAiOjE2ODcxNDM1OTd9.r8lXoTnm_f1JrNvd9pyk47Q70AE_maX98iuwYhr1ulM`,
+            },
           },
         )
         .then((response) => {

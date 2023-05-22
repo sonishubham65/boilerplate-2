@@ -2,6 +2,7 @@ application:
   url:
     backend: http://localhost:3000
     frontend: http://localhost:4200
+    cors: http://localhost:4200,http://localhost
 databases:
   postgres:
     database: postgres

@@ -36,7 +36,6 @@ export class PostService {
   }
 
   async detail(id): Promise<PostModel> {
-    this.logger.log('Inside Service');
     return await this.postModel.findOne({
       where: {
         id,

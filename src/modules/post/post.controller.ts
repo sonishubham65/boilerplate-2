@@ -75,7 +75,6 @@ export class PostController {
     @Param() param,
   ): Promise<{ data: { post: Partial<PostModel> } }> {
     const post = await this.postService.detail(param.id);
-
     return {
       data: {
         post: post,

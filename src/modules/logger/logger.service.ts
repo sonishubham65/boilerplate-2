@@ -12,11 +12,12 @@ export class LoggerService {
     this.requestId = uuidv4();
   }
 
-  private save(message: string, data?: object, type: string = 'info') {
+  private save(message: string, facts?: object, type: string = 'info') {
     console.log(
       JSON.stringify({
+        _time: new Date(),
         message,
-        data,
+        facts,
         requestId: this.requestId,
         path: this.request.url,
         type,
@@ -39,23 +40,23 @@ export class LoggerService {
     }
   }
 
-  log(message: string, data?: object) {
+  log(message: string, data = {}) {
     this.save(message, data);
   }
 
-  info(message: string, data?: object) {
+  info(message: string, data = {}) {
     this.save(message, data, 'info');
   }
 
-  warn(message: string, data?: object) {
+  warn(message: string, data = {}) {
     this.save(message, data, 'warning');
   }
 
-  debug(message: string, data?: object) {
+  debug(message: string, data = {}) {
     this.save(message, data, 'debug');
   }
 
-  error(message: string, data?: object) {
+  error(message: string, data = {}) {
     this.save(message, data, 'error');
   }
 }

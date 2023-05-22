@@ -18,15 +18,17 @@ export class LoggerInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    this.logger.log('Request Interceptor', request.body);
+    this.logger.log('Request Interceptor', {
+      body: request.body,
+      headers: request.headers,
+      queries: request.query,
+      params: request.params,
+    });
     const now = Date.now();
     return next.handle().pipe(
       tap((data) => {
         const response = context.switchToHttp().getResponse();
-        this.logger.log(`Response Interceptor`, {
-          time: Date.now() - now,
-          data,
-        });
+        this.logger.log(`Response Interceptor`, data);
       }),
     );
   }
