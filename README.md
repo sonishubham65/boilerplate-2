@@ -57,6 +57,7 @@
 - Run following command to undo the migration
 `npm run migration:undo`
 
+- Enable GKE & setup serviceaccount.json
 - export PATH="$PATH:/Users/shubhamsoni/Documents/ecommerce/backend/terraform"
 - chmod +x /Users/shubhamsoni/Documents/ecommerce/backend/terraform
 - export GOOGLE_APPLICATION_CREDENTIALS=/Users/shubhamsoni/Documents/ecommerce/backend/serviceaccount.json
@@ -72,5 +73,17 @@ should now work.
 If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
+- RUN `terraform fmt -check`
 - RUN `terraform validate`
-- RUN `terraform apply`
+- RUN terraform init -upgrade
+- RUN `TF_LOG=debug terraform apply`
+
+## Once everything is done
+
+- RUN `terraform plan -destroy`
+- RUN `terraform destroy`
+
+- RUN `docker build -t jktech .`
+- RUN `docker tag jktech gcr.io/jktech-387515/jktech`
+- RUN `gcloud auth configure-docker`
+- RUN `docker push gcr.io/jktech-387515/jktech`

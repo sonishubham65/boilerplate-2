@@ -40,7 +40,12 @@ serviceaccount.json
 
 
 # Local .terraform directories
-**/.terraform/*
+**/.terraform-script-2/*
+
+terraform-script-2/.terraform
+terraform-script-2/.terraform/*
+terraform-script-2/.terraform.lock.hcl
+terraform-script-2/.terraform.tfstate
 
 # .tfstate files
 *.tfstate

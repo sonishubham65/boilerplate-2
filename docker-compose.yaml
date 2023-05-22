@@ -33,19 +33,19 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - '5432:5432'
-  mongo:
-    image: mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    ports:
-      - '27017:27017'
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
-    environment:
-      - discovery.type=single-node
-      - ELASTICSEARCH_USERNAME=elastic
-      - "ELASTIC_PASSWORD=changeme"
-    ports:
-      - '9200:9200'
-      - '9300:9300'
+  # mongo:
+  #   image: mongo
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=password
+  #   ports:
+  #     - '27017:27017'
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+  #   environment:
+  #     - discovery.type=single-node
+  #     - ELASTICSEARCH_USERNAME=elastic
+  #     - "ELASTIC_PASSWORD=changeme"
+  #   ports:
+  #     - '9200:9200'
+  #     - '9300:9300'

@@ -10,7 +10,6 @@ import {
   REDIS_PROVIDER,
 } from './database.constant';
 import { redisProvider } from './redis.provider';
-import { RedisService } from './redis/redis.service';
 
 @Module({
   imports: [
@@ -42,7 +41,7 @@ import { RedisService } from './redis/redis.service';
       },
     }),
   ],
-  providers: [redisProvider, RedisService],
+  providers: [redisProvider],
   exports: [SequelizeModule, REDIS_PROVIDER],
 })
 export class DatabaseModule {}
