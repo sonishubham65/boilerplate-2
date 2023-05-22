@@ -2,13 +2,13 @@
 provider "google" {
   credentials = file("/Users/shubhamsoni/Documents/ecommerce/backend/serviceaccount.json")
   project     = "jktech-387515"
-  region      = "asia-south1"
+  region      = "asia-east1-a"
 }
 
 # Create a Kubernetes cluster
 resource "google_container_cluster" "kubernetes_cluster" {
   name     = "my-cluster"
-  location = "asia-south1"
+  location = "asia-east1-a"
 
   node_pool {
     name = "my-node-pool"
@@ -159,6 +159,12 @@ resource "kubernetes_deployment" "nestjs_deployment" {
       }
     }
   }
+
+  # Specify the explicit dependency on other resources
+  depends_on = [
+    kubernetes_deployment.redis_deployment,
+    kubernetes_deployment.postgres_deployment,
+  ]
 }
 
 
