@@ -3,8 +3,8 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { PostModule } from '../src/modules/post/post.module';
 import { PostService } from '../src/modules/post/post.service';
-import { PostController } from 'src/modules/post/post.controller';
 
+const ACCESSTOKEN = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzb25pc2h1YmhhbTY1QGdtYWlsLmNvbSIsIm5hbWUiOiJTaHViaGFtIFNvbmkiLCJwYXNzd29yZCI6bnVsbCwic3RhdHVzIjoiaW5hY3RpdmUiLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwiaWF0IjoxNjg0MTQzNTk3LCJleHAiOjE2ODcxNDM1OTd9.r8lXoTnm_f1JrNvd9pyk47Q70AE_maX98iuwYhr1ulM`;
 describe('Cats', () => {
   let app: INestApplication;
   let postService = {
@@ -44,13 +44,50 @@ describe('Cats', () => {
 
       const response = await request(app.getHttpServer())
         .get(`/v1/post/detail/${postId}`)
-        .set(
-          'Authorization',
-          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzb25pc2h1YmhhbTY1QGdtYWlsLmNvbSIsIm5hbWUiOiJTaHViaGFtIFNvbmkiLCJwYXNzd29yZCI6bnVsbCwic3RhdHVzIjoiaW5hY3RpdmUiLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwiaWF0IjoxNjg0MTQzNTk3LCJleHAiOjE2ODcxNDM1OTd9.r8lXoTnm_f1JrNvd9pyk47Q70AE_maX98iuwYhr1ulM`,
-        )
+        .set('Authorization', `Bearer ${ACCESSTOKEN}`)
         .expect(200);
       expect(response.body).toEqual(expectedResponse);
       expect(postService.findOne).toHaveBeenCalledWith(postId);
+    });
+
+    it(`without token`, async () => {
+      const postId = 1;
+      const expectedResponse = {
+        message: 'Unauthorized',
+        data: {
+          statusCode: 401,
+          message: 'Unauthorized',
+        },
+      };
+
+      const response = await request(app.getHttpServer())
+        .get(
+          `/v1/post/list?limit=2&page=1&order[0][]=id&order[0][]=desc&order[1][]=title&order[1][]=ASC`,
+        )
+        .expect(401);
+      expect(response.body).toEqual(expectedResponse);
+      expect(postService.findOne).toHaveBeenCalledWith(postId);
+    });
+
+    it(`validation`, async () => {
+      const postId = 1;
+      const expectedResponse = {
+        message: 'Unprocessable Entity Exception',
+        data: {
+          statusCode: 422,
+          message: [
+            'id must be a number conforming to the specified constraints',
+            'id must not be less than 1',
+          ],
+          error: 'Unprocessable Entity',
+        },
+      };
+
+      const response = await request(app.getHttpServer())
+        .get(`/v1/post/detail/_`)
+        .set('Authorization', `Bearer ${ACCESSTOKEN}`)
+        .expect(422);
+      expect(response.body).toEqual(expectedResponse);
     });
   });
 

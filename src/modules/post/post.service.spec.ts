@@ -46,5 +46,16 @@ describe('PostService', () => {
       const result = await service.detail(1);
       expect(result).toEqual(expectedResult);
     });
+
+    it('should return a null value', async () => {
+      const detail: any = null;
+
+      const expectedResult = detail;
+      jest.spyOn(postModel, 'findOne').mockResolvedValue(detail);
+      const result = await service.detail(0);
+      console.log(`result`, result);
+      expect(result).toEqual(null);
+    });
+
   });
 });

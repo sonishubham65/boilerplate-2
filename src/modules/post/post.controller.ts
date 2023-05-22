@@ -18,7 +18,7 @@ import {
 } from '@nestjs/common';
 import { AccessGuard } from '../auth/access.guard';
 import { LoggerService } from '../logger/logger.service';
-import { PostDTO } from './post.dto';
+import { PostDTO, IdDTO } from './post.dto';
 import PostModel from './post.model';
 import { PostService } from './post.service';
 
@@ -69,8 +69,9 @@ export class PostController {
   @HttpCode(HttpStatus.OK)
   @Get('detail/:id')
   async detail(
-    @Param() param,
+    @Param() param: IdDTO,
   ): Promise<{ data: { post: Partial<PostModel> } }> {
+    console.log(param);
     const post = await this.postService.detail(param.id);
     return {
       data: {

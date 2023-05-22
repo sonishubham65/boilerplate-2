@@ -34,3 +34,11 @@ export class PostDTO {
   @IsEnum(PostStatus)
   status;
 }
+
+
+export class IdDTO {
+  @IsNotEmpty()
+  @Min(1)
+  @IsNumber()
+  id;
+}
