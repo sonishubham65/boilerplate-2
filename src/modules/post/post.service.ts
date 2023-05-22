@@ -7,7 +7,6 @@ import { PostModel } from './post.model';
 @Injectable()
 export class PostService {
   constructor(
-    private logger: LoggerService,
     @Inject(POST_REPOSITORY)
     private postModel: typeof PostModel,
   ) {}

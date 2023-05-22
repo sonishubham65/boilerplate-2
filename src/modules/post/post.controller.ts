@@ -27,10 +27,7 @@ import { PostService } from './post.service';
   version: '1',
 })
 export class PostController {
-  constructor(
-    private postService: PostService,
-    private logger: LoggerService,
-  ) {}
+  constructor(private postService: PostService) {}
 
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.CREATED)

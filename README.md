@@ -1,17 +1,18 @@
 # Start application
 
-## Run docker compos
+## Run docker compose for redis, mongo, postgres
 
-- for redis, mongo, postgres,
-- docker-compose up
+`docker-compose up`
 
-## Run migration npm run migration:run
+## Run migration
 
-- Start server on local
+`npm run migration:run`
+
+## Start server on local
+
 `npm run start:dev`
 
-- baseuri: <https://localhost:3000/v1>
-
+### baseuri: <https://localhost:3000/v1>
 
 # Authentication
 
