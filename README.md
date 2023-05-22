@@ -56,3 +56,21 @@
 
 - Run following command to undo the migration
 `npm run migration:undo`
+
+- export PATH="$PATH:/Users/shubhamsoni/Documents/ecommerce/backend/terraform"
+- chmod +x /Users/shubhamsoni/Documents/ecommerce/backend/terraform
+- export GOOGLE_APPLICATION_CREDENTIALS=/Users/shubhamsoni/Documents/ecommerce/backend/serviceaccount.json
+- mkdir terraform-script
+- cd terraform-script
+- terraform init
+- add main.tf and configuration
+- Run `terraform init`
+Terraform has been successfully initialized!
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+- RUN `terraform validate`
+- RUN `terraform apply`
