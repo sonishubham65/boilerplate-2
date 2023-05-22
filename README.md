@@ -57,10 +57,11 @@ commands will detect it and remind you to do so if necessary.
 - RUN `terraform fmt -check`
 - RUN `terraform validate`
 - RUN terraform init -upgrade
-- RUN `TF_LOG=debug terraform apply`
-
-## Once everything is done
-
+===
 - RUN `terraform plan -destroy`
 - RUN `terraform destroy`
+===
 
+- KUBECONFIG=/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig gcloud container clusters get-credentials my-cluster --region asia-east1-a --project jktech-387515
+
+- RUN `TF_LOG=debug terraform apply`

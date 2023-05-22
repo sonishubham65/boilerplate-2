@@ -4,7 +4,9 @@ provider "google" {
   project     = "jktech-387515"
   region      = "asia-east1-a"
 }
-
+provider "kubernetes" {
+  config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig"
+}
 # Create a Kubernetes cluster
 resource "google_container_cluster" "kubernetes_cluster" {
   name     = "my-cluster"

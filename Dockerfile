@@ -19,5 +19,8 @@ RUN npm run build
 # Expose the port that the application will run on
 EXPOSE 3000
 
+# Run migrations
+RUN npm run migration:run
+
 # Set the command to start the application
 CMD ["npm", "run", "start:prod"]
