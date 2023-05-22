@@ -34,6 +34,39 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-config/local.yaml
-config/local.json
-terraform/serviceaccount.json
+/config/local.yaml
+/config/local.json
+serviceaccount.json
+
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Exclude all .tfvars files, which typically contain sensitive information
+*.tfvars
+
+# Ignore override files as they are usually used to override resources locally
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Exclude any generated files or directories
+*.tfplan
+*.tfstate.backup
+
+# Ignore Visual Studio Code specific files
+.vscode/
+
+# Ignore JetBrains specific files
+.idea/
+*.iml
+*.ipr
+*.iws
