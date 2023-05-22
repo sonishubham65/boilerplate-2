@@ -1,4 +1,6 @@
 const config = require('config');
+console.log(process.env.NODE_ENV);
+console.log(config.get('databases.postgres'));
 module.exports = {
   username: config.get('databases.postgres.user'),
   password: config.get('databases.postgres.password'),

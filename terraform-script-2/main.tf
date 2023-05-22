@@ -57,13 +57,8 @@ resource "kubernetes_deployment" "redis_deployment" {
           image = "redis:latest"
           name  = "redis-container"
           env {
-            name = "REDIS_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.redis_password.metadata.0.name
-                key  = "redis-password"
-              }
-            }
+            name  = "REDIS_PASSWORD"
+            value = base64decode(kubernetes_secret.redis_password.data["redis-password"])
           }
         }
 
@@ -101,24 +96,15 @@ resource "kubernetes_deployment" "postgres_deployment" {
         container {
           image = "postgres:latest"
           name  = "postgres-container"
+          
           env {
-            name = "POSTGRES_USER"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.postgres_secret.metadata.0.name
-                key  = "POSTGRES_USER"
-              }
-            }
+            name  = "POSTGRES_USER"
+            value = base64decode(kubernetes_secret.postgres_secret.data["POSTGRES_USER"])
           }
 
           env {
-            name = "POSTGRES_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.postgres_secret.metadata.0.name
-                key  = "POSTGRES_PASSWORD"
-              }
-            }
+            name  = "POSTGRES_PASSWORD"
+            value = base64decode(kubernetes_secret.postgres_secret.data["POSTGRES_PASSWORD"])
           }
         }
 
@@ -129,6 +115,25 @@ resource "kubernetes_deployment" "postgres_deployment" {
   }
 }
 
+# Expose Nest.js deployment with a LoadBalancer service
+resource "kubernetes_service" "nestjs_service" {
+  metadata {
+    name = "nestjs-service"
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.nestjs_deployment.metadata.0.labels.app
+    }
+
+    type = "LoadBalancer"
+
+    port {
+      port        = 80
+      target_port = 3000
+    }
+  }
+}
 # Deploy Nest.js application using Dockerfile
 resource "kubernetes_deployment" "nestjs_deployment" {
   metadata {
@@ -157,9 +162,16 @@ resource "kubernetes_deployment" "nestjs_deployment" {
         container {
           image = "gcr.io/jktech-387515/jktech"
           name  = "jktech"
+          env {
+            name  = "NODE_ENV"
+            value = base64decode(kubernetes_secret.env.data["NODE_ENV"])
+          }
         }
+
       }
     }
+
+
   }
 
   # Specify the explicit dependency on other resources
@@ -199,8 +211,8 @@ resource "kubernetes_secret" "postgres_secret" {
   }
 
   data = {
-    POSTGRES_USER     = base64encode("my-postgres-username")
-    POSTGRES_PASSWORD = base64encode("my-postgres-password")
+    POSTGRES_USER     = base64encode("postgres")
+    POSTGRES_PASSWORD = base64encode("pass123")
   }
 }
 
@@ -211,7 +223,17 @@ resource "kubernetes_secret" "redis_password" {
   }
 
   data = {
-    "redis-password" = base64encode("my-redis-password")
+    "redis-password" = base64encode("password")
+  }
+}
+
+resource "kubernetes_secret" "env" {
+  metadata {
+    name = "env"
+  }
+
+  data = {
+    "NODE_ENV" = base64encode("docker")
   }
 }
 

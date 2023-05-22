@@ -33,7 +33,7 @@
 
 ## Terraform
 
-- RUN `docker build -t jktech .`
+- RUN `docker build --network=host -t jktech .`
 - RUN `docker tag jktech gcr.io/jktech-387515/jktech`
 - RUN `gcloud auth configure-docker`
 - RUN `docker push gcr.io/jktech-387515/jktech`
