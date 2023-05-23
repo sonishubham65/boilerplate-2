@@ -255,7 +255,7 @@ resource "kubernetes_deployment" "nestjs_deployment" {
           name  = "jktech"
           env {
             name  = "NODE_ENV"
-            value = base64decode(kubernetes_secret.env.data["NODE_ENV"])
+            value = "docker"
           }
         }
 
