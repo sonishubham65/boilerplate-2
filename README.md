@@ -65,3 +65,8 @@ commands will detect it and remind you to do so if necessary.
 - KUBECONFIG=/Users/shubhamsoni/Documents/ecommerce/backend/kube.config gcloud container clusters get-credentials my-cluster --region asia-east1-a --project jktech-387515
 
 - RUN `TF_HTTP_TIMEOUT=10m TF_LOG=debug terraform apply`
+
+kubectl get pods
+kubectl exec -it redis-deployment-796948d4d9-tnqg2 -- /bin/bash
+redis-cli
+KEYS *

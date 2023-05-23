@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM node:16.17.0 AS builder
+FROM node:16.17.0
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -12,18 +12,6 @@ RUN npm install
 
 # Copy the entire application directory to the container
 COPY . .
-
-# Build the application
-RUN npm run build
-
-# Stage 2: Final stage
-FROM node:16.17.0
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy the built application from the previous stage
-COPY --from=builder /app .
 
 # Run migrations
 RUN npm run migration:run

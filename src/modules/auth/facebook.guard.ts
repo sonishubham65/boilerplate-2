@@ -49,6 +49,8 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
 
     const user = await this.authService.get_user_with_email(facebookuser.email);
 
+    console.log(`user==>`, user);
+      
     if (user) {
       let response = await this.authService.validateUser(user.email, '');
       done(null, user);
