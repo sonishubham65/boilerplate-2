@@ -13,6 +13,8 @@ RUN npm install
 # Copy the entire application directory to the container
 COPY . .
 
+RUN npm build
+
 # Run migrations
 RUN npm run migration:run
 
