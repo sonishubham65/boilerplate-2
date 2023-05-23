@@ -36,6 +36,7 @@ export class LoggerException implements ExceptionFilter {
     const payload = {
       message: result.message,
       data: result.data,
+      requestId: this.logger.requestId,
     };
 
     if (result.statusCode == HttpStatus.INTERNAL_SERVER_ERROR) {

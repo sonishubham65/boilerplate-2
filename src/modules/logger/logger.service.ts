@@ -6,7 +6,7 @@ import { Request } from 'express';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LoggerService {
-  private readonly requestId: string;
+  public readonly requestId: string;
 
   constructor(@Inject(REQUEST) private request: Request) {
     this.requestId = uuidv4();
