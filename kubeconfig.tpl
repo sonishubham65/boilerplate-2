@@ -1,8 +1,9 @@
 apiVersion: v1
+kind: Config
 clusters:
 - cluster:
     certificate-authority-data: ${cluster_ca_certificate}
-    server: ${endpoint}
+    server: ${cluster_endpoint}
   name: my-cluster
 contexts:
 - context:
@@ -10,10 +11,9 @@ contexts:
     user: my-user
   name: my-context
 current-context: my-context
-kind: Config
 preferences: {}
 users:
 - name: my-user
   user:
-    client-certificate-data: ${client_certificate}
-    client-key-data: ${client_key}
+    client-certificate-data: ${cluster_client_certificate}
+    client-key-data: ${cluster_client_key}

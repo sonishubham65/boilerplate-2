@@ -24,50 +24,76 @@ resource "google_container_cluster" "kubernetes_cluster" {
       max_node_count = 5
     }
   }
-
 }
 
-data "google_container_cluster" "kubernetes_cluster" {
-#   name     = google_container_cluster.kubernetes_cluster.name
-#   location = google_container_cluster.kubernetes_cluster.location
-  name     = "my-cluster"
-  location = "asia-east1-a"
-}
-
-resource "null_resource" "my-context" {
-  depends_on = [google_container_cluster.kubernetes_cluster]
-  triggers = {
-    timestamp = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOT
-      # Create a new context
-      kubectl config set-context my-context --cluster=my-cluster --user=my-user
-
-      # Set the current-context to the newly created context
-      kubectl config use-context my-context
-    EOT
-  }
-}
+# resource "local_file" "kubeconfig" {
+#   depends_on = [google_container_cluster.kubernetes_cluster]
+#   filename   = "/Users/shubhamsoni/Documents/ecommerce/backend/kube.config"
+#   content = templatefile("/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig.tpl", {
+#     cluster_ca_certificate = base64encode(google_container_cluster.kubernetes_cluster.master_auth.0.cluster_ca_certificate)
+#     cluster_endpoint               = google_container_cluster.kubernetes_cluster.endpoint
+#     cluster_client_certificate     = base64encode(google_container_cluster.kubernetes_cluster.master_auth.0.client_certificate)
+#     cluster_client_key             = base64encode(google_container_cluster.kubernetes_cluster.master_auth.0.client_key)
+#   })
+# }
 
 
-resource "local_file" "kubeconfig" {
-    depends_on = [google_container_cluster.kubernetes_cluster]
-  filename = "${path.cwd}/kubeconfig"
+# resource "local_file" "kubeconfig" {
+#     depends_on = [google_container_cluster.kubernetes_cluster]
+#   filename = "/Users/shubhamsoni/Documents/ecommerce/backend/kube.config"
+#   content = <<-EOF
+# apiVersion: v1
+# kind: Config
+# clusters:
+# - name: my-cluster
+#   cluster:
+#     server: ${google_container_cluster.kubernetes_cluster.endpoint}
+#     certificate-authority-data: ${google_container_cluster.kubernetes_cluster.master_auth.0.cluster_ca_certificate}
+# users:
+# - name: my-user
+#   user:
+#     client-certificate-data: ${google_container_cluster.kubernetes_cluster.master_auth.0.client_certificate}
+#     client-key-data: ${google_container_cluster.kubernetes_cluster.master_auth.0.client_key}
+# contexts:
+# - name: my-context
+#   context:
+#     cluster: my-cluster
+#     user: my-user
+#   EOF
+# }
 
-  #"${path.module}/kubeconfig.tpl"
-  content = templatefile("/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig.tpl", {
-    cluster_ca_certificate   = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.cluster_ca_certificate)
-    endpoint                 = data.google_container_cluster.kubernetes_cluster.endpoint
-    client_certificate       = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.client_certificate)
-    client_key               = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.client_key)
-  })
-}
+# output "client_certificate" {
+#   value = google_container_cluster.kubernetes_cluster.master_auth[0].client_certificate
+# }
+
+# output "client_key" {
+#   value = google_container_cluster.kubernetes_cluster.master_auth[0].client_key
+# }
+
+
+
+
+# resource "null_resource" "my-context" {
+#   depends_on = [google_container_cluster.kubernetes_cluster]
+#   triggers = {
+#     timestamp = timestamp()
+#   }
+
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       # Create a new context
+#       kubectl config set-context my-context --cluster=my-cluster --user=my-user
+
+#       # Set the current-context to the newly created context
+#       kubectl config use-context my-context
+#     EOT
+#   }
+# }
+
 
 provider "kubernetes" {
-  config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig"
-  config_context = "my-context"
+  config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kube.config"
+  #config_context = "my-context"
 }
 
 

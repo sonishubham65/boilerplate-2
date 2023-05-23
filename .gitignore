@@ -76,4 +76,4 @@ override.tf.json
 *.ipr
 *.iws
 
-kubeconfig
+kube.config
