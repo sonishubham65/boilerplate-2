@@ -113,13 +113,13 @@ resource "kubernetes_secret" "postgres_secret" {
 }
 
 # Create Redis Secret
-resource "kubernetes_secret" "redis_password" {
+resource "kubernetes_secret" "redis_secret" {
   metadata {
     name = "redis-credentials"
   }
 
   data = {
-    "redis-password" = base64encode("password")
+    REDIS_PASSWORD = base64encode("password")
   }
   depends_on = [google_container_cluster.kubernetes_cluster]
 }
@@ -165,7 +165,7 @@ resource "kubernetes_deployment" "redis_deployment" {
           name  = "redis-container"
           env {
             name  = "REDIS_PASSWORD"
-            value = base64decode(kubernetes_secret.redis_password.data["redis-password"])
+            value = base64decode(kubernetes_secret.redis_secret.data.REDIS_PASSWORD)
           }
         }
 
@@ -312,7 +312,47 @@ resource "kubernetes_horizontal_pod_autoscaler" "nestjs_hpa" {
   }
 }
 
+# Expose Redis service
+resource "kubernetes_service" "redis_service" {
+  metadata {
+    name = "redis-service"
+  }
 
+  spec {
+    selector = {
+      app = kubernetes_deployment.redis_deployment.metadata.0.labels.app
+    }
+
+    type = "ClusterIP"
+
+    port {
+      port        = 6379
+      target_port = 6379
+    }
+  }
+  depends_on = [kubernetes_deployment.redis_deployment]
+}
+
+# Expose PostgreSQL service
+resource "kubernetes_service" "postgres_service" {
+  metadata {
+    name = "postgres-service"
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.postgres_deployment.metadata.0.labels.app
+    }
+
+    type = "ClusterIP"
+
+    port {
+      port        = 5432
+      target_port = 5432
+    }
+  }
+  depends_on = [kubernetes_deployment.postgres_deployment]
+}
 
 
 # Output PostgreSQL username and password

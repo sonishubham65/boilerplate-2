@@ -8,10 +8,10 @@ databases:
     database: postgres
     user: postgres
     password: pass123
-    host: postgres-deployment
+    host: postgres-service
     port: 5432
   redis:  
-    url: redis://default:password@redis-deployment:6379/0
+    url: redis://default:password@redis-service:6379/0
   mongo:  
     url: redis://default:password@localhost:6379/0
   elastic:  
