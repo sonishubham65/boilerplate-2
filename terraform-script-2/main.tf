@@ -1,13 +1,11 @@
+#${path.cwd}
 # Define provider
 provider "google" {
   credentials = file("/Users/shubhamsoni/Documents/ecommerce/backend/serviceaccount.json")
   project     = "jktech-387515"
   region      = "asia-east1-a"
 }
-provider "kubernetes" {
-  config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig"
-  depends_on  = [google_container_cluster.kubernetes_cluster]
-}
+
 # Create a Kubernetes cluster
 resource "google_container_cluster" "kubernetes_cluster" {
   name     = "my-cluster"
@@ -27,6 +25,88 @@ resource "google_container_cluster" "kubernetes_cluster" {
     }
   }
 
+}
+
+data "google_container_cluster" "kubernetes_cluster" {
+#   name     = google_container_cluster.kubernetes_cluster.name
+#   location = google_container_cluster.kubernetes_cluster.location
+  name     = "my-cluster"
+  location = "asia-east1-a"
+}
+
+resource "null_resource" "my-context" {
+  depends_on = [google_container_cluster.kubernetes_cluster]
+  triggers = {
+    timestamp = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      # Create a new context
+      kubectl config set-context my-context --cluster=my-cluster --user=my-user
+
+      # Set the current-context to the newly created context
+      kubectl config use-context my-context
+    EOT
+  }
+}
+
+
+resource "local_file" "kubeconfig" {
+    depends_on = [google_container_cluster.kubernetes_cluster]
+  filename = "${path.cwd}/kubeconfig"
+
+  #"${path.module}/kubeconfig.tpl"
+  content = templatefile("/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig.tpl", {
+    cluster_ca_certificate   = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.cluster_ca_certificate)
+    endpoint                 = data.google_container_cluster.kubernetes_cluster.endpoint
+    client_certificate       = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.client_certificate)
+    client_key               = base64encode(data.google_container_cluster.kubernetes_cluster.master_auth.0.client_key)
+  })
+}
+
+provider "kubernetes" {
+  config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig"
+  config_context = "my-context"
+}
+
+
+
+# Create PostgreSQL Secret
+
+resource "kubernetes_secret" "postgres_secret" {
+  metadata {
+    name = "postgres-credentials"
+  }
+
+  data = {
+    POSTGRES_USER     = base64encode("postgres")
+    POSTGRES_PASSWORD = base64encode("pass123")
+  }
+  depends_on = [google_container_cluster.kubernetes_cluster]
+}
+
+# Create Redis Secret
+resource "kubernetes_secret" "redis_password" {
+  metadata {
+    name = "redis-credentials"
+  }
+
+  data = {
+    "redis-password" = base64encode("password")
+  }
+  depends_on = [google_container_cluster.kubernetes_cluster]
+}
+
+resource "kubernetes_secret" "env" {
+  metadata {
+    name = "env"
+  }
+
+  data = {
+    "NODE_ENV" = base64encode("docker")
+  }
+  depends_on = [google_container_cluster.kubernetes_cluster]
 }
 
 # Deploy Redis workload
@@ -67,7 +147,7 @@ resource "kubernetes_deployment" "redis_deployment" {
 
     }
   }
-  depends_on  = [google_container_cluster.kubernetes_cluster]
+  depends_on = [google_container_cluster.kubernetes_cluster]
 }
 
 # Deploy PostgreSQL workload
@@ -98,7 +178,7 @@ resource "kubernetes_deployment" "postgres_deployment" {
         container {
           image = "postgres:latest"
           name  = "postgres-container"
-          
+
           env {
             name  = "POSTGRES_USER"
             value = base64decode(kubernetes_secret.postgres_secret.data["POSTGRES_USER"])
@@ -115,29 +195,10 @@ resource "kubernetes_deployment" "postgres_deployment" {
 
     }
   }
-  depends_on  = [google_container_cluster.kubernetes_cluster]
+  depends_on = [google_container_cluster.kubernetes_cluster]
 }
 
-# Expose Nest.js deployment with a LoadBalancer service
-resource "kubernetes_service" "nestjs_service" {
-  metadata {
-    name = "nestjs-service"
-  }
 
-  spec {
-    selector = {
-      app = kubernetes_deployment.nestjs_deployment.metadata.0.labels.app
-    }
-
-    type = "LoadBalancer"
-
-    port {
-      port        = 80
-      target_port = 3000
-    }
-  }
-  depends_on  = [google_container_cluster.kubernetes_cluster]
-}
 # Deploy Nest.js application using Dockerfile
 resource "kubernetes_deployment" "nestjs_deployment" {
   metadata {
@@ -185,6 +246,26 @@ resource "kubernetes_deployment" "nestjs_deployment" {
   ]
 }
 
+# Expose Nest.js deployment with a LoadBalancer service
+resource "kubernetes_service" "nestjs_service" {
+  metadata {
+    name = "nestjs-service"
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.nestjs_deployment.metadata.0.labels.app
+    }
+
+    type = "LoadBalancer"
+
+    port {
+      port        = 80
+      target_port = 3000
+    }
+  }
+  depends_on = [kubernetes_deployment.nestjs_deployment]
+}
 
 # Define HorizontalPodAutoscaler (HPA) for Nest.js deployment
 resource "kubernetes_horizontal_pod_autoscaler" "nestjs_hpa" {
@@ -207,39 +288,6 @@ resource "kubernetes_horizontal_pod_autoscaler" "nestjs_hpa" {
 
 
 
-# Create PostgreSQL Secret
-
-resource "kubernetes_secret" "postgres_secret" {
-  metadata {
-    name = "postgres-credentials"
-  }
-
-  data = {
-    POSTGRES_USER     = base64encode("postgres")
-    POSTGRES_PASSWORD = base64encode("pass123")
-  }
-}
-
-# Create Redis Secret
-resource "kubernetes_secret" "redis_password" {
-  metadata {
-    name = "redis-credentials"
-  }
-
-  data = {
-    "redis-password" = base64encode("password")
-  }
-}
-
-resource "kubernetes_secret" "env" {
-  metadata {
-    name = "env"
-  }
-
-  data = {
-    "NODE_ENV" = base64encode("docker")
-  }
-}
 
 # Output PostgreSQL username and password
 # output "postgres_username" {
