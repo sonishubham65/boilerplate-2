@@ -6,6 +6,7 @@ provider "google" {
 }
 provider "kubernetes" {
   config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kubeconfig"
+  depends_on  = [google_container_cluster.kubernetes_cluster]
 }
 # Create a Kubernetes cluster
 resource "google_container_cluster" "kubernetes_cluster" {
@@ -66,6 +67,7 @@ resource "kubernetes_deployment" "redis_deployment" {
 
     }
   }
+  depends_on  = [google_container_cluster.kubernetes_cluster]
 }
 
 # Deploy PostgreSQL workload
@@ -113,6 +115,7 @@ resource "kubernetes_deployment" "postgres_deployment" {
 
     }
   }
+  depends_on  = [google_container_cluster.kubernetes_cluster]
 }
 
 # Expose Nest.js deployment with a LoadBalancer service
@@ -133,6 +136,7 @@ resource "kubernetes_service" "nestjs_service" {
       target_port = 3000
     }
   }
+  depends_on  = [google_container_cluster.kubernetes_cluster]
 }
 # Deploy Nest.js application using Dockerfile
 resource "kubernetes_deployment" "nestjs_deployment" {
