@@ -8,7 +8,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PostModule } from './modules/post/post.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
-
+import { TerminusModule } from '@nestjs/terminus';
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     DatabaseModule,
@@ -17,6 +18,8 @@ import { LoggerMiddleware } from './modules/logger/logger.middleware';
     AuthModule,
     PostModule,
     LoggerModule,
+    HttpModule,
+    TerminusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

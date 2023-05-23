@@ -7,18 +7,21 @@ import {
   Param,
   UnauthorizedException,
 } from '@nestjs/common';
+import {
+  HealthCheck,
+  HealthCheckService,
+  HttpHealthIndicator,
+} from '@nestjs/terminus';
 import { AppService } from './app.service';
 
-@Controller({
-  version: '1',
-})
+@Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private health: HealthCheckService,
+    private dns: HttpHealthIndicator,
+  ) {}
 
-  @Get()
-  getHello() {
-    return { message: this.appService.getHello() };
-  }
   @HttpCode(HttpStatus.OK)
   @Get('error/:type')
   async error(@Param() param) {
@@ -45,5 +48,13 @@ export class AppController {
         }
         break;
     }
+  }
+
+  @Get()
+  @HealthCheck()
+  check() {
+    return this.health.check([
+      () => this.dns.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
+    ]);
   }
 }
