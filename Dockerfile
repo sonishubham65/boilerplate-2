@@ -15,9 +15,6 @@ COPY . .
 
 RUN npm run build
 
-# Run migrations
-RUN npm run migration:run
-
 # Expose the port that the application will run on
 EXPOSE 3000
 
