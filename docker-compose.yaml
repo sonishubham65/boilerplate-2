@@ -1,16 +1,16 @@
 version: '3'
 services:
-  nestjs:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - redis
-      - postgres
-    ports:
-      - '3000:3000'
-    networks:
-      - my-network
+  # nestjs:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   ports:
+  #     - '3000:3000'
+  #   networks:
+  #     - my-network
 
   redis:
     image: redis
