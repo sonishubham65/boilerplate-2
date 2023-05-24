@@ -70,3 +70,9 @@ kubectl get pods
 kubectl exec -it redis-deployment-796948d4d9-tnqg2 -- /bin/bash
 redis-cli
 KEYS *
+
+# Notice
+
+- You need to rerun the TF script, after creation of cluster to get kube config
+- You need to wait for some time to IP for ingress
+- You need to wait for some time to PROVISIONING the SSL cert

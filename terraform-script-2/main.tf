@@ -25,6 +25,8 @@ resource "google_container_cluster" "kubernetes_cluster" {
   }
 }
 
+// TODO: Save all the kubernetes config in kube.config
+
 # Use manually created Kube config to enter Kubernetes
 provider "kubernetes" {
   config_path = "/Users/shubhamsoni/Documents/ecommerce/backend/kube.config"
@@ -227,17 +229,29 @@ resource "kubernetes_service" "nestjs_service" {
   depends_on = [kubernetes_deployment.nestjs_deployment]
 }
 
+# Create a Google-managed SSL certificate
+resource "google_compute_managed_ssl_certificate" "managed_ssl_cert" {
+  name        = "your-ssl-cert"
+  description = "SSL certificate for jk.sonishubham.com"
+  managed {
+    domains = ["jk.sonishubham.com"]
+  }
+}
+
 # Expose Nest.js deployment with an Ingress resource
 resource "kubernetes_ingress_v1" "nestjs_ingress" {
-  depends_on = [kubernetes_service.nestjs_service]
+  depends_on = [kubernetes_service.nestjs_service, google_compute_managed_ssl_certificate.managed_ssl_cert]
   metadata {
     name = "nestjs-ingress"
+    annotations = {
+      "networking.gke.io/managed-certificates"      = google_compute_managed_ssl_certificate.managed_ssl_cert.name
+    }
   }
 
   spec {
-    # tls {
-    #   secret_name = "tls-secret"
-    # }
+    tls {
+      secret_name = "managed_ssl_cert"
+    }
     default_backend {
       service {
         name = "nestjs-service"
@@ -264,6 +278,7 @@ resource "google_dns_record_set" "a_record" {
 
   rrdatas = [
     kubernetes_ingress_v1.nestjs_ingress.status.0.load_balancer.0.ingress.0.ip
+    // TODO: IP not available first time, I guess it takes time 
   ]
 }
 
