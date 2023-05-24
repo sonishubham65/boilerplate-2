@@ -231,7 +231,7 @@ resource "kubernetes_service" "nestjs_service" {
 
 # Create a Google-managed SSL certificate
 resource "google_compute_managed_ssl_certificate" "managed_ssl_cert" {
-  name        = "your-ssl-cert"
+  name        = "your-ssl-cert-a"
   description = "SSL certificate for jk.sonishubham.com"
   managed {
     domains = ["jk.sonishubham.com"]

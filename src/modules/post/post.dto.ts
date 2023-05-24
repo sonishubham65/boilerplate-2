@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   IsString,
@@ -23,22 +24,41 @@ export class PostDTO {
   @MinLength(3)
   @MaxLength(100)
   @IsString()
+  @ApiProperty({
+    default: 'Nike Invincible 3',
+    type: 'string',
+    name: 'title',
+  })
   title;
 
   @IsNotEmpty()
   @MinLength(100)
   @MaxLength(2000)
   @IsString()
+  @ApiProperty({
+    name: 'description',
+    default:
+      'With maximum cushioning to support every mile, the Invincible 3 gives you our highest level of comfort underfoot to help you stay on your feet today, tomorrow and beyond. Designed to help keep you on feeling ready and reinvigorated',
+    type: 'string',
+  })
   description;
 
   @IsEnum(PostStatus)
+  @ApiProperty({
+    default: 'active',
+    name: 'status',
+    type: 'string',
+  })
   status;
 }
 
-
 export class IdDTO {
   @IsNotEmpty()
-  @Min(1)
-  @IsNumber()
+  @IsString()
+  @ApiProperty({
+    name: 'id',
+    default: 1,
+    type: 'string',
+  })
   id;
 }

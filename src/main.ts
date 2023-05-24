@@ -1,11 +1,12 @@
+process.env.NODE_CONFIG_STRICT_MODE = 'true';
+
 import { HttpStatus, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from './modules/config/config.service';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-process.env.NODE_CONFIG_STRICT_MODE = 'true';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   // Override with Secret manager.
@@ -41,6 +42,23 @@ async function bootstrap() {
     credentials: true,
     maxAge: 3600,
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('POC demonstration')
+    .setDescription('The POC demonstration description')
+    .addBearerAuth({
+      name: 'Authorization',
+      bearerFormat: 'Bearer',
+      scheme: 'Bearer',
+      type: 'http',
+      in: 'Header',
+    })
+    .setVersion('1.0')
+    .addTag('poc')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
+
   await app.listen(configService.getConfig('application.port'));
 }
 bootstrap();

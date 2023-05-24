@@ -16,6 +16,13 @@ import {
   UseGuards,
   Version,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { AccessGuard } from '../auth/access.guard';
 import { LoggerService } from '../logger/logger.service';
 import { PostDTO, IdDTO } from './post.dto';
@@ -32,6 +39,10 @@ export class PostController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
+  @ApiBearerAuth()
+  @ApiBody({
+    type: PostDTO,
+  })
   async create(@Body() body: PostDTO, @Req() req) {
     const post = await this.postService.create({
       ...body,
@@ -47,6 +58,7 @@ export class PostController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
   @Get('list')
+  @ApiBearerAuth()
   async list(
     @Req() req,
     @Query() query,
@@ -82,6 +94,14 @@ export class PostController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AccessGuard)
+  @ApiBearerAuth()
+  @ApiBody({
+    type: PostDTO,
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'number',
+  })
   @Put('update/:id')
   async update(
     @Req() req,

@@ -36,6 +36,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.0",
+    "@nestjs/swagger": "^6.3.0",
     "@nestjs/terminus": "^9.2.2",
     "@types/ms": "^0.7.31",
     "axios": "^1.4.0",
