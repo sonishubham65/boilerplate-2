@@ -14,6 +14,7 @@ import {
 } from '@nestjs/terminus';
 import { response } from 'express';
 import { AppService } from './app.service';
+import * as fs from 'fs';
 
 @Controller()
 export class AppController {
@@ -53,6 +54,26 @@ export class AppController {
 
   @Get('.well-known/acme-challenge/:challenge')
   letsencrypt(@Param('challenge') challenge: string) {
+    setTimeout(() => {
+      console.log('1..');
+    }, 0);
+    console.log('2');
+    Promise.resolve(10).then((data) => {
+      console.log(`3`, data);
+    });
+    fs.readFile(
+      '/Users/shubhamsoni/Documents/ecommerce/backend/certs/privkey.pem',
+
+      (err, data) => {
+        console.log('6', err, data);
+      },
+    );
+    process.nextTick(() => {
+      console.log(`5`);
+    });
+    setImmediate(() => {
+      console.log('4..');
+    });
     return 'OpWYPbiKSL-Mbuv62Eb5VlwHXN0_S-49jFfuQED2uwE.fxEtQayX3-AVdJvElbvaSIeclUIn0yJEBm2qNsm53eE';
   }
 

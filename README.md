@@ -76,3 +76,6 @@ KEYS *
 - You need to rerun the TF script, after creation of cluster to get kube config
 - You need to wait for some time to IP for ingress
 - You need to wait for some time to PROVISIONING the SSL cert
+
+sudo certbot certonly --manual --preferred-challenges=http
+sudo certbot certonly --manual --preferred-challenges=http --cert-name sonishubham.com --key-path /etc/letsencrypt/live/sonishubham.com/privkey.pem --fullchain-path /etc/letsencrypt/live/sonishubham.com/fullchain.pem

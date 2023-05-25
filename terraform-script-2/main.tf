@@ -23,8 +23,8 @@ resource "kubernetes_secret" "managed_ssl_cert" {
   }
 
   data = {
-    "tls.crt" = filebase64("path/to/certificate.crt")
-    "tls.key" = filebase64("path/to/privatekey.key")
+    "tls.crt" = filebase64("/Users/shubhamsoni/Documents/ecommerce/backend/certs/fullchain.pem")
+    "tls.key" = filebase64("/Users/shubhamsoni/Documents/ecommerce/backend/certs/privkey.pem")
   }
 
   type = "kubernetes.io/tls"
@@ -270,21 +270,21 @@ resource "kubernetes_service" "nestjs_service" {
 resource "kubernetes_ingress_v1" "nestjs_ingress" {
   depends_on = [kubernetes_service.nestjs_service]
   metadata {
-    name = "nestjs-ingress"
+    name = "nestjs-ingress-2"
     annotations = {
-      #"networking.gke.io/managed-certificates"      = "your-ssl-cert-2"
-      "kubernetes.io/ingress.class"         = "nginx"
+      "kubernetes.io/ingress.class" = "nginx"
       "cert-manager.io/cluster-issuer"      = "letsencrypt-prod"
-      "kubernetes.io/ingress.global-static-ip-name" = "jk-ip"
+      "kubernetes.io/ingress.global-static-ip-name": "jk-ip"
     }
   }
 
   spec {
+    ingress_class_name = "nginx"
     tls {
         secret_name = "your-ssl-cert-2"
         hosts = [
             "sonishubham.com",
-            "www.sonishubham.com",
+            "www.sonishubham.com"
         ]
 
     }
@@ -303,17 +303,17 @@ data "google_compute_global_address" "static_ip" {
   name = "jk-ip"
 }
 
-resource "google_dns_record_set" "a_record" {
-  name         = "sonishubham.com."
-  type         = "A"
-  ttl          = 300
-  managed_zone = "your-dns-zone"
+# resource "google_dns_record_set" "a_record" {
+#   name         = "sonishubham.com."
+#   type         = "A"
+#   ttl          = 300
+#   managed_zone = "your-dns-zone"
 
-  rrdatas = [
-    #kubernetes_ingress_v1.nestjs_ingress.status.0.load_balancer.0.ingress.0.ip
-    data.google_compute_global_address.static_ip.address
-  ]
-}
+#   rrdatas = [
+#     kubernetes_ingress_v1.nestjs_ingress.status.0.load_balancer.0.ingress.0.ip
+#     #data.google_compute_global_address.static_ip.address
+#   ]
+# }
 
 
 # Define HorizontalPodAutoscaler (HPA) for Nest.js deployment
@@ -445,4 +445,20 @@ resource "kubernetes_service" "postgres_service" {
 #       kubectl config use-context my-context
 #     EOT
 #   }
+# }
+
+# resource "google_compute_url_map" "my_url_map" {
+#   name        = "my-url-map"
+#   default_service = google_compute_backend_service.nestjs_service.self_link
+# }
+
+# resource "google_compute_target_https_proxy" "my_https_proxy" {
+#   name    = "my-https-proxy"
+#   url_map = google_compute_url_map.my_url_map.self_link
+# }
+# resource "google_compute_forwarding_rule" "my_forwarding_rule" {
+#   name                  = "my-forwarding-rule"
+#   target                = google_compute_target_https_proxy.my_https_proxy.self_link
+#   load_balancing_scheme = "EXTERNAL"
+#   port_range            = "443"
 # }
