@@ -62,7 +62,7 @@ commands will detect it and remind you to do so if necessary.
 - RUN `terraform destroy`
 ===
 
-- KUBECONFIG=/Users/shubhamsoni/Documents/ecommerce/backend/kube.config gcloud container clusters get-credentials my-cluster-2 --region asia-east1-a --project jktech-387515
+- KUBECONFIG=/Users/shubhamsoni/Documents/ecommerce/backend/kube.config gcloud container clusters get-credentials my-cluster-2 --zone asia-south2-a --project jktech-387515
 
 - RUN `TF_HTTP_TIMEOUT=10m TF_LOG=debug terraform apply`
 

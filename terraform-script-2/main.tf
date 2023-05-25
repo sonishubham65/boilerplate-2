@@ -2,13 +2,49 @@
 provider "google" {
   credentials = file("/Users/shubhamsoni/Documents/ecommerce/backend/serviceaccount.json")
   project     = "jktech-387515"
-  region      = "asia-east1-a"
+  region      = "asia-south2-a"
 }
+
+
+#Create a Google-managed SSL certificate
+# resource "google_compute_managed_ssl_certificate" "managed_ssl_cert" {
+#   name        = "your-ssl-cert-2"
+#   description = "SSL certificate for sonishubham.com"
+#   managed {
+#     domains = ["sonishubham.com"]
+#   }
+# }
+
+
+resource "kubernetes_secret" "managed_ssl_cert" {
+  metadata {
+    name      = "your-ssl-cert-2"
+    namespace = "default"
+  }
+
+  data = {
+    "tls.crt" = filebase64("path/to/certificate.crt")
+    "tls.key" = filebase64("path/to/privatekey.key")
+  }
+
+  type = "kubernetes.io/tls"
+}
+
+
+# resource "google_dns_managed_zone" "dns_zone" {
+#   depends_on = [kubernetes_ingress_v1.nestjs_ingress]
+#   name        = "your-dns-zone"
+#   dns_name    = "sonishubham.com."
+#   description = "DNS zone for sonishubham.com"
+#   dnssec_config {
+#     state = "on"
+#   }
+# }
 
 # Create a Kubernetes cluster
 resource "google_container_cluster" "kubernetes_cluster" {
   name     = "my-cluster-2"
-  location = "asia-east1-a"
+  location = "asia-south2-a"
 
   node_pool {
     name = "my-node-pool"
@@ -229,28 +265,28 @@ resource "kubernetes_service" "nestjs_service" {
   depends_on = [kubernetes_deployment.nestjs_deployment]
 }
 
-# Create a Google-managed SSL certificate
-resource "google_compute_managed_ssl_certificate" "managed_ssl_cert" {
-  name        = "your-ssl-cert-a"
-  description = "SSL certificate for jk.sonishubham.com"
-  managed {
-    domains = ["jk.sonishubham.com"]
-  }
-}
 
 # Expose Nest.js deployment with an Ingress resource
 resource "kubernetes_ingress_v1" "nestjs_ingress" {
-  depends_on = [kubernetes_service.nestjs_service, google_compute_managed_ssl_certificate.managed_ssl_cert]
+  depends_on = [kubernetes_service.nestjs_service]
   metadata {
     name = "nestjs-ingress"
     annotations = {
-      "networking.gke.io/managed-certificates"      = google_compute_managed_ssl_certificate.managed_ssl_cert.name
+      #"networking.gke.io/managed-certificates"      = "your-ssl-cert-2"
+      "kubernetes.io/ingress.class"         = "nginx"
+      "cert-manager.io/cluster-issuer"      = "letsencrypt-prod"
+      "kubernetes.io/ingress.global-static-ip-name" = "jk-ip"
     }
   }
 
   spec {
     tls {
-      secret_name = "managed_ssl_cert"
+        secret_name = "your-ssl-cert-2"
+        hosts = [
+            "sonishubham.com",
+            "www.sonishubham.com",
+        ]
+
     }
     default_backend {
       service {
@@ -263,22 +299,19 @@ resource "kubernetes_ingress_v1" "nestjs_ingress" {
   }
 }
 
-resource "google_dns_managed_zone" "dns_zone" {
-  depends_on = [kubernetes_ingress_v1.nestjs_ingress]
-  name        = "your-dns-zone"
-  dns_name    = "jk.sonishubham.com."
-  description = "DNS zone for your-domain.com"
+data "google_compute_global_address" "static_ip" {
+  name = "jk-ip"
 }
 
 resource "google_dns_record_set" "a_record" {
-  name         = "jk.sonishubham.com."
+  name         = "sonishubham.com."
   type         = "A"
   ttl          = 300
-  managed_zone = google_dns_managed_zone.dns_zone.name
+  managed_zone = "your-dns-zone"
 
   rrdatas = [
-    kubernetes_ingress_v1.nestjs_ingress.status.0.load_balancer.0.ingress.0.ip
-    // TODO: IP not available first time, I guess it takes time 
+    #kubernetes_ingress_v1.nestjs_ingress.status.0.load_balancer.0.ingress.0.ip
+    data.google_compute_global_address.static_ip.address
   ]
 }
 

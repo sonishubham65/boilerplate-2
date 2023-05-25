@@ -16,6 +16,7 @@ import {
   IsOptional,
   isString,
   IsNumberString,
+  IsArray,
 } from 'class-validator';
 import { PostStatus } from './post.model';
 
@@ -61,4 +62,42 @@ export class IdDTO {
     type: 'string',
   })
   id;
+}
+
+export class PostQueryDTO {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    default: 10,
+    type: 'string',
+  })
+  limit;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    default: 10,
+    type: 'string',
+  })
+  page;
+
+  @IsNotEmpty({ each: true })
+  @IsArray()
+  @ApiProperty({
+    default: [
+      ['id', 'DESC'],
+      ['title', 'ASC'],
+    ],
+    type: 'array',
+    isArray: true,
+    required: true,
+    name: 'order',
+    items: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
+  })
+  order;
 }

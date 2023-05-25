@@ -25,7 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { AccessGuard } from '../auth/access.guard';
 import { LoggerService } from '../logger/logger.service';
-import { PostDTO, IdDTO } from './post.dto';
+import { PostDTO, IdDTO, PostQueryDTO } from './post.dto';
 import PostModel from './post.model';
 import { PostService } from './post.service';
 
@@ -59,11 +59,14 @@ export class PostController {
   @HttpCode(HttpStatus.OK)
   @Get('list')
   @ApiBearerAuth()
+  @ApiQuery({
+    type: PostQueryDTO,
+  })
   async list(
     @Req() req,
     @Query() query,
   ): Promise<{ data: { posts: Array<Partial<PostModel>> } }> {
-    console.log(query.order);
+    console.log(`req.user`, req.user);
     const posts = await this.postService.list(
       req.user.id,
       query.order,

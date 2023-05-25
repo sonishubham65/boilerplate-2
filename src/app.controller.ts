@@ -12,6 +12,7 @@ import {
   HealthCheckService,
   HttpHealthIndicator,
 } from '@nestjs/terminus';
+import { response } from 'express';
 import { AppService } from './app.service';
 
 @Controller()
@@ -48,6 +49,11 @@ export class AppController {
         }
         break;
     }
+  }
+
+  @Get('.well-known/acme-challenge/:challenge')
+  letsencrypt(@Param('challenge') challenge: string) {
+    return 'OpWYPbiKSL-Mbuv62Eb5VlwHXN0_S-49jFfuQED2uwE.fxEtQayX3-AVdJvElbvaSIeclUIn0yJEBm2qNsm53eE';
   }
 
   @Get()

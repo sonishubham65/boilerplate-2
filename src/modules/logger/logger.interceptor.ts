@@ -20,9 +20,11 @@ export class LoggerInterceptor implements NestInterceptor {
     const now = Date.now();
     return next.handle().pipe(
       tap((data) => {
-        data.executionTime = Date.now() - now;
-        data.requestId = this.logger.requestId;
-        const response = context.switchToHttp().getResponse();
+        if (typeof data === 'object') {
+          data.executionTime = Date.now() - now;
+          data.requestId = this.logger.requestId;
+          const response = context.switchToHttp().getResponse();
+        }
         this.logger.log(`Response Interceptor`, data);
       }),
     );
