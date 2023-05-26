@@ -99,3 +99,7 @@ describe('AuthController', () => {
     });
   });
 });
+
+/**
+ * MC-1
+ */
