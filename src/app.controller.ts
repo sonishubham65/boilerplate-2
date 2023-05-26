@@ -32,7 +32,6 @@ export class AppController {
         {
           throw new UnauthorizedException('You are not authenticated.');
         }
-        break;
       case 2:
         {
           throw new ForbiddenException(
@@ -43,12 +42,10 @@ export class AppController {
             },
           );
         }
-        break;
       default:
         {
           throw new Error('Manual Error Generate, Unexpected.');
         }
-        break;
     }
   }
 

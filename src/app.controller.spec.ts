@@ -9,6 +9,7 @@ chai.use(chaiHttp);
 
 describe('AppController', () => {
   let appController: AppController;
+  let health: HealthCheckService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -16,12 +17,15 @@ describe('AppController', () => {
       providers: [AppService, HealthCheckService, HttpHealthIndicator],
     })
       .overrideProvider(HealthCheckService)
-      .useValue({})
+      .useValue({
+        check: jest.fn(),
+      })
       .overrideProvider(HttpHealthIndicator)
       .useValue({})
       .compile();
 
     appController = app.get<AppController>(AppController);
+    health = app.get<HealthCheckService>(HealthCheckService);
   });
 
   describe('root', () => {
@@ -66,8 +70,33 @@ describe('AppController', () => {
         });
     });
   });
-});
 
-/**
- * "message","statusCode","error"
- */
+  describe('letsencrypt', () => {
+    it('should be defined', () => {
+      expect(appController.letsencrypt).toBeDefined();
+    });
+    it('should return a string', async () => {
+      chai
+        .expect(await appController.letsencrypt('OpWYPbiKSL'))
+        .to.be.a('string');
+    });
+  });
+
+  describe('check', () => {
+    it('should be defined', () => {
+      expect(appController.check).toBeDefined();
+    });
+    it('should return an object', async () => {
+      jest.spyOn(health, 'check').mockResolvedValue({
+        status: 'ok',
+        info: { postgres: { status: 'up' } },
+        error: {},
+        details: { postgres: { status: 'up' } },
+      });
+
+      const response = await appController.check();
+      console.log(response);
+      chai.expect(response).to.all.keys('details', 'error', 'info', 'status');
+    });
+  });
+});
