@@ -66,7 +66,6 @@ export class PostController {
     @Req() req,
     @Query() query,
   ): Promise<{ data: { posts: Array<Partial<PostModel>> } }> {
-    console.log(`req.user`, req.user);
     const posts = await this.postService.list(
       req.user.id,
       query.order,
@@ -86,7 +85,6 @@ export class PostController {
   async detail(
     @Param() param: IdDTO,
   ): Promise<{ data: { post: Partial<PostModel> } }> {
-    console.log(param);
     const post = await this.postService.detail(param.id);
     return {
       data: {

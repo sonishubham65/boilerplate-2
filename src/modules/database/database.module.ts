@@ -18,10 +18,6 @@ import { redisProvider } from './redis.provider';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory(configService: ConfigService) {
-        console.log(
-          'databases.postgres',
-          configService.getConfig('databases.postgres'),
-        );
         return {
           name: POSTGRES1,
           dialect: 'postgres',

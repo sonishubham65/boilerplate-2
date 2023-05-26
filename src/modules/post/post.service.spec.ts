@@ -53,7 +53,6 @@ describe('PostService', () => {
       const expectedResult = detail;
       jest.spyOn(postModel, 'findOne').mockResolvedValue(detail);
       const result = await service.detail(0);
-      console.log(`result`, result);
       expect(result).toEqual(null);
     });
 

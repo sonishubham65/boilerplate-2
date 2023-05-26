@@ -12,7 +12,6 @@ export class AccessGuard extends AuthGuard('access') {}
 @Injectable()
 export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor(private authService: AuthService, configService: ConfigService) {
-    console.log(configService.getConfig('jwt'));
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -24,7 +23,6 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: any) {
-    console.log(`payload`, payload);
     return payload;
   }
 }

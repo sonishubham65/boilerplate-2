@@ -22,7 +22,6 @@ export class PostService {
     page: number,
     limit: number,
   ): Promise<PostModel[]> {
-    console.log(page, limit);
     return await this.postModel.findAll({
       where: {
         userId: userId,
