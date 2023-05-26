@@ -28,7 +28,7 @@ export class AuthController {
   @Version('1')
   @UseGuards(FacebookGuard)
   @Get('/facebook')
-  async facebookLogin(@Req() req: Request, @Res() res: Response) {
+  facebookLogin(): number {
     return HttpStatus.OK;
   }
 
@@ -36,22 +36,18 @@ export class AuthController {
   @UseGuards(FacebookGuard)
   @HttpCode(HttpStatus.OK)
   @Get('/facebook/callback')
-  async facebookLoginCallback(
-    @Request() req,
-    @Body() body,
-  ): Promise<{
+  facebookLoginCallback(@Request() req): {
     message: string;
     data: {
       user: UserModel;
       tokens: { access_token: string; refresh_token: string };
     };
-  }> {
-    const tokens = this.authService.generate_token({ ...req.user });
+  } {
     return {
       message: 'Logged in successfully',
       data: {
         user: req.user,
-        tokens,
+        tokens: this.authService.generate_token({ ...req.user }),
       },
     };
   }
@@ -67,7 +63,7 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
-  async signin(@Request() req, @Body() body): Promise<Signin> {
+  signin(@Request() req, @Body() body): Signin {
     // TODO: Get user Profile, Roles, Permissions, for now considering the req.user only
     const tokens = this.authService.generate_token(req.user);
     return {
@@ -88,7 +84,7 @@ export class AuthController {
    */
   @HttpCode(HttpStatus.CREATED)
   @Post('/signup')
-  async signup(@Request() req, @Body() body) {
+  async signup(@Body() body) {
     const userId = await this.authService.createUser(body);
     // TODO: Send Email for verification.
     return {

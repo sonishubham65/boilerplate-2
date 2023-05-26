@@ -10,6 +10,7 @@ chai.use(chaiHttp);
 describe('AppController', () => {
   let appController: AppController;
   let health: HealthCheckService;
+  let dns: HttpHealthIndicator;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -21,11 +22,14 @@ describe('AppController', () => {
         check: jest.fn(),
       })
       .overrideProvider(HttpHealthIndicator)
-      .useValue({})
+      .useValue({
+        pingCheck: jest.fn(),
+      })
       .compile();
 
     appController = app.get<AppController>(AppController);
     health = app.get<HealthCheckService>(HealthCheckService);
+    dns = app.get<HttpHealthIndicator>(HttpHealthIndicator);
   });
 
   describe('root', () => {
@@ -95,7 +99,6 @@ describe('AppController', () => {
       });
 
       const response = await appController.check();
-      console.log(response);
       chai.expect(response).to.all.keys('details', 'error', 'info', 'status');
     });
   });
