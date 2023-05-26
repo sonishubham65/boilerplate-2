@@ -65,6 +65,7 @@ commands will detect it and remind you to do so if necessary.
 - KUBECONFIG=/Users/shubhamsoni/Documents/ecommerce/backend/kube.config gcloud container clusters get-credentials my-cluster-2 --zone asia-south2-a --project jktech-387515
 
 - RUN `TF_HTTP_TIMEOUT=10m TF_LOG=debug terraform apply`
+- RUN `terraform destroy`
 
 kubectl get pods
 kubectl exec -it redis-deployment-796948d4d9-tnqg2 -- /bin/bash
@@ -79,3 +80,7 @@ KEYS *
 
 sudo certbot certonly --manual --preferred-challenges=http
 sudo certbot certonly --manual --preferred-challenges=http --cert-name sonishubham.com --key-path /etc/letsencrypt/live/sonishubham.com/privkey.pem --fullchain-path /etc/letsencrypt/live/sonishubham.com/fullchain.pem
+
+docker build --network=host -t jktech .  
+docker tag jktech gcr.io/jktech-387515/jktech
+docker push gcr.io/jktech-387515/jktech
