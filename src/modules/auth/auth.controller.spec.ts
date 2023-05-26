@@ -24,6 +24,15 @@ describe('AuthController', () => {
             refresh_token: '',
           };
         },
+        createUser: (data) => {
+          return {
+            id: 1,
+            email: 'abc@exmaple.com',
+            name: 'John Doe',
+            status: 'active',
+            emailVerified: true,
+          };
+        },
       })
       .compile();
 
@@ -33,31 +42,60 @@ describe('AuthController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  it('signin', (done) => {
-    controller
-      .signin(
-        {
-          user: {
-            id: 1,
-            email: 'abc@exmaple.com',
-            name: 'John Doe',
-            status: 'active',
-            emailVerified: true,
-          },
-        },
-        {
+  it('signin', () => {
+    const response = controller.signin(
+      {
+        user: {
+          id: 1,
           email: 'abc@exmaple.com',
-          password: 'Password!!',
+          name: 'John Doe',
+          status: 'active',
+          emailVerified: true,
         },
-      )
-      .then((response) => {
-        chai.expect(response).to.include.keys('message', 'data');
-      })
-      .catch((e) => {
-        chai.expect(e).to.be.a(undefined);
-      })
-      .finally(() => {
-        done();
+      },
+      {
+        email: 'abc@exmaple.com',
+        password: 'Password!!',
+      },
+    );
+    chai.expect(response).to.include.keys('message', 'data');
+  });
+
+  describe('FacebookLogin methods', () => {
+    it('facebookLogin', () => {
+      chai.expect(controller.facebookLogin()).to.be.equal(200);
+    });
+
+    it('facebookLoginCallback', () => {
+      chai
+        .expect(
+          controller.facebookLoginCallback({
+            user: {
+              id: 1,
+              email: 'abc@exmaple.com',
+              name: 'John Doe',
+              status: 'active',
+              emailVerified: true,
+            },
+          }),
+        )
+        .to.include.keys('message', 'data');
+    });
+  });
+
+  describe('Signup', () => {
+    it('Signup defined', () => {
+      expect(controller.signup).toBeDefined();
+    });
+
+    it('Signup functionality', async () => {
+      const response = await controller.signup({
+        email: 'abc@exmaple.com',
+        name: 'John Doe',
+        status: 'active',
+        emailVerified: true,
       });
+      chai.expect(response).to.include.keys('message');
+    });
   });
 });
