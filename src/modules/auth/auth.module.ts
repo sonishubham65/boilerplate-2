@@ -7,9 +7,11 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.guard';
 import { FacebookStrategy } from './facebook.guard';
 import { DatabaseModule } from '../database/database.module';
+import { LoggerModule } from '../logger/logger.module';
+import { LoggerService } from '../logger/logger.service';
 
 @Module({
-  imports: [DatabaseModule, UserModule],
+  imports: [DatabaseModule, UserModule, LoggerModule],
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -17,6 +19,7 @@ import { DatabaseModule } from '../database/database.module';
     FacebookStrategy,
     JwtService,
     AccessStrategy,
+    LoggerService,
   ],
   exports: [AccessStrategy],
 })

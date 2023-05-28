@@ -5,19 +5,20 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { REDIS_PROVIDER } from '../database/database.constant';
+import { REDIS_PROVIDER, USER_REPOSITORY } from '../database/database.constant';
 import { UserModel, UserStatus } from './user.model';
 import * as moment from 'moment';
+import { LoggerService } from '../logger/logger.service';
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('USER_REPOSITORY')
-    private userModel: typeof UserModel,
+    @Inject(USER_REPOSITORY)
+    private userModel,
     @Inject(REDIS_PROVIDER) private cacheManager: Redis,
   ) {}
 
-  async get_user_with_email(email: string): Promise<UserModel> {
-    const user = await this.userModel.findOne({
+  async get_user_with_email(email: string) {
+    return await this.userModel.findOne({
       attributes: [
         'id',
         'email',
@@ -30,7 +31,6 @@ export class UserService {
         email,
       },
     });
-    return user?.toJSON();
   }
 
   async get_user_by_id(id: number): Promise<UserModel> {

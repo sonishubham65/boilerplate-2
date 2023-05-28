@@ -55,9 +55,9 @@ export class AuthService {
     return await bcrypt.hash(string, salt);
   }
 
-  async createUser(user) {
+  async createUser(user, status = UserStatus.inactive) {
     if (user.password) user.password = await this.generate_hash(user.password);
-    return await this.userService.create_user(user);
+    return await this.userService.create_user(user, status);
   }
 
   async validate(userId): Promise<boolean> {

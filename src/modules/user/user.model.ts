@@ -10,6 +10,7 @@ import { DataTypes } from 'sequelize';
 import { BaseModel } from '../base.model';
 import { Exclude } from 'class-transformer';
 import PostModel from '../post/post.model';
+import { USER_REPOSITORY } from '../database/database.constant';
 
 export enum UserStatus {
   active = 'active',
@@ -58,7 +59,7 @@ export class UserModel extends BaseModel {
 
 export const userProviders = [
   {
-    provide: 'USER_REPOSITORY',
+    provide: USER_REPOSITORY,
     useValue: UserModel,
   },
 ];

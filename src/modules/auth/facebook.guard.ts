@@ -1,9 +1,10 @@
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { AuthService } from './auth.service';
 import { UserModel, UserStatus } from '../user/user.model';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class FacebookGuard extends AuthGuard('facebook') {
@@ -37,7 +38,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     refreshToken: string,
     profile: Profile,
     done: (err: any, user: any, info?: any) => void,
-  ): Promise<any> {
+  ) {
     const { name, emails } = profile;
 
     const facebookuser: Partial<UserModel> = {
@@ -47,44 +48,20 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       emailVerified: true,
     };
 
-    const user = await this.authService.get_user_with_email(facebookuser.email);
+    let user = await this.authService.get_user_with_email(facebookuser.email);
 
     console.log(`user==>`, user);
-      
-    if (user) {
-      let response = await this.authService.validateUser(user.email, '');
-      done(null, user);
-    } else {
-      const response = await this.authService.createUser(facebookuser);
-      done(null, response);
+
+    if (!user) {
+      await this.authService.createUser(facebookuser, UserStatus.active);
     }
+
+    const { success, code } = await this.authService.validateUser(
+      user.email,
+      '',
+    );
+    if (success) done(null, user);
+    else throw new UnauthorizedException();
+    //done({ cause: code, statusCode: 401, message: 'Unauthentication' }, {});
   }
-
-  // async validate(
-  //   accessToken: string,
-  //   refreshToken: string,
-  //   profile: any,
-  //   done: any,
-  // ): Promise<any> {
-  //   const { name, emails, id } = profile;
-  //   const user = {
-  //     email: emails[0].value,
-  //     firstName: name.givenName,
-  //     lastName: name.familyName,
-  //     facebookId: id,
-  //     accessToken,
-  //     refreshToken,
-  //   };
-
-  //   /*
-  //   // further validation with DB/Redis
-  //   const validatedUser = await this.authService.validateOAuthLogin(user);
-  //   if (!validatedUser) {
-  //     return done(null, false);
-  //   }
-  //   done(null, validatedUser);
-  //   */
-  //   console.log(`user`, user);
-  //   done(null, user);
-  // }
 }

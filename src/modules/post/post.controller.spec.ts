@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
+import * as chai from 'chai';
+import chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 
 describe('PostController', () => {
   let controller: PostController;
@@ -9,15 +12,13 @@ describe('PostController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
-      providers: [
-        {
-          provide: PostService,
-          useValue: {
-            detail: () => {},
-          },
-        },
-      ],
-    }).compile();
+      providers: [PostService],
+    })
+      .overrideProvider(PostService)
+      .useValue({
+        detail: jest.fn(),
+      })
+      .compile();
 
     controller = module.get<PostController>(PostController);
     service = module.get<PostService>(PostService);

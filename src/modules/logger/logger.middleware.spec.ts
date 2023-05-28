@@ -39,7 +39,6 @@ describe('LoggerMiddleware', () => {
 
   it('should call next function', () => {
     middleware.use(mockRequest as Request, mockResponse, mockNextFunction);
-
     expect(mockNextFunction).toHaveBeenCalled();
   });
 });

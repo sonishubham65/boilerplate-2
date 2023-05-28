@@ -22,6 +22,7 @@ export class LoggerService {
         path: this.request.url,
         type,
       }),
+      '\n',
     );
   }
 

@@ -84,3 +84,9 @@ sudo certbot certonly --manual --preferred-challenges=http --cert-name sonishubh
 docker build --network=host -t jktech .  
 docker tag jktech gcr.io/jktech-387515/jktech
 docker push gcr.io/jktech-387515/jktech
+
+# Testing
+
+npm run test
+npm run test -f **.spec.ts
+npm run test:cov --reported=lcov --skipfull=true
