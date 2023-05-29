@@ -53,7 +53,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     console.log(`user==>`, user);
 
     if (!user) {
-      await this.authService.createUser(facebookuser, UserStatus.active);
+      user = await this.authService.createUser(facebookuser, UserStatus.active);
     }
 
     const { success, code } = await this.authService.validateUser(
