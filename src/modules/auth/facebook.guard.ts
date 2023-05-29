@@ -63,7 +63,5 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     if (success) done(null, user);
     else
       done({ cause: code, statusCode: 401, message: 'Unauthentication' }, {});
-    //throw new UnauthorizedException();
-    //done({ cause: code, statusCode: 401, message: 'Unauthentication' }, {});
   }
 }

@@ -269,33 +269,46 @@ resource "kubernetes_service" "nestjs_service" {
 # Expose Nest.js deployment with an Ingress resource
 resource "kubernetes_ingress_v1" "nestjs_ingress" {
   depends_on = [kubernetes_service.nestjs_service]
+
   metadata {
-    name = "nestjs-ingress-2"
+    name = "nestjs-ingress-1"
+
     annotations = {
-      "kubernetes.io/ingress.class" = "nginx"
-      "cert-manager.io/cluster-issuer"      = "letsencrypt-prod"
-      "kubernetes.io/ingress.global-static-ip-name": "jk-ip"
+      "kubernetes.io/ingress.class"                    = "nginx"
+      "nginx.ingress.kubernetes.io/whitelist-source-range":"0.0.0.0/0"
+      "cert-manager.io/cluster-issuer"                 = "letsencrypt"
+      "kubernetes.io/ingress.global-static-ip-name"    = "jk-ip"
     }
+    
   }
 
   spec {
-    ingress_class_name = "nginx"
-    tls {
-        secret_name = "your-ssl-cert-2"
-        hosts = [
-            "sonishubham.com",
-            "www.sonishubham.com"
-        ]
+    
+ 
+    rule {
+      host = "sonishubham.com"
+      #cert = "your-ssl-cert-2"
+      http {
+        path {
+          backend {
+            service {
+              name = "nestjs-service"
+              port {
+                number = 80
+              }
+            }
+          }
 
-    }
-    default_backend {
-      service {
-        name = "nestjs-service"
-        port {
-          number = 80
+          path = "/*"
         }
       }
     }
+
+    tls {
+      secret_name = "your-ssl-cert-2"
+    }
+
+
   }
 }
 

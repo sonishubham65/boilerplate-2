@@ -20,4 +20,4 @@ idp:
   facebook:
     appId: 1590269461471529
     secret: 9d1e3ae8795a602e56f1d4de5ff33b5b
-    callbackurl: http://localhost:3000/v1/auth/facebook/callback
+    callbackurl: https://sonishubham.com/v1/auth/facebook/callback
