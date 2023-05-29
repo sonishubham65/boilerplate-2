@@ -68,7 +68,7 @@ override.tf.json
 *.tfstate.backup
 
 # Ignore Visual Studio Code specific files
-.vscode/
+#.vscode/
 
 # Ignore JetBrains specific files
 .idea/
